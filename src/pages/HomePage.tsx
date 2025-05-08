@@ -1,10 +1,17 @@
 import { useNavigate } from 'react-router-dom';
+import { useUIStore } from '@/stores/uiStore';
+import VoteFormModal from '@/components/ui/VoteFormModal';
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const openVoteForm = useUIStore((s) => s.openVoteForm);
 
   const handleClick = () => {
     navigate('/login');
+  };
+
+  const handleOpenModal = () => {
+    openVoteForm();
   };
 
   return (
@@ -18,6 +25,13 @@ const HomePage = () => {
       >
         로그인
       </button>
+      <button
+        onClick={handleOpenModal}
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+      >
+        투표 생성 모달 열기
+      </button>
+      <VoteFormModal />
       <div className="text-2xl font-semibold mb-5">HomePage</div>
     </div>
   );
