@@ -18,7 +18,7 @@ const HomePage = () => {
       >
         로그인
       </button>
-      <div className="text-2xl font-semibold mb-5">HomePage</div>
+      <div className="text-2xl font-baloo font-extrabold mb-5">Momuk</div>
     </div>
   );
 };

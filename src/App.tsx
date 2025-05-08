@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomePage from './pages/HomePage';
 import Login from './pages/Login';
 import Register from '@/pages/Register.tsx';
+import Alert from './components/Alert';
 
 function App() {
   const queryClient = new QueryClient();
