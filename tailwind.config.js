@@ -4,15 +4,25 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          500: '#1AE273',
-          200: '#A3F5C7',
-        },
-        secondary: {
-          600: '#333333',
-          500: '#606060',
-          200: '#E7BEEE',
-        },
+        primary: '#ffa49b',
+        'primary-variant': '#ffdbd7',
+        secondary: '#9bb4ff',
+        error: '#FF0000',
+        background: '#252836',
+        'item-background': '#1F1D2B',
+        'login-btn': '#4044ED',
+        'register-btn': '#656ED3',
+      },
+      fontFamily: {
+        // 'jk-abode': ['Regular Demo', 'sans-serif'],
+        // 'baloo-bhaijaan': ['Regular', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
+        oswald: ['Oswald', 'sans-serif'],
+        'baloo-bhaijaan': ['Baloo Bhaijaan 2', 'cursive'],
+      },
+      fontSize: {
+        'main-item': '15px',
+        'secondary-size': '12px',
       },
     },
   },
