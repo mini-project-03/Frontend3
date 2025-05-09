@@ -5,9 +5,29 @@ import image15 from '/public/image 15.png'
 import image16 from '/public/image 16.png'
 import line1 from '/public/Line 1.svg'
 import line2 from '/public/Line 2.svg'
+import { LoginRequest } from '@/types/auth';
+import { useState } from 'react';
+import { AuthAPI } from '@/api/authAPI.ts';
 
 export const Login = () => {
   const navigate = useNavigate(); // navigate 훅 초기화
+
+  const [formData, setFormData] = useState<LoginRequest>({
+    userId: '',
+    userPwd: '',
+  });
+
+  const handleLogin = async () => {
+    try {
+      const response = await AuthAPI.login(formData);
+      console.log(response);
+      navigate('/');
+
+
+    }catch(error) {
+      alert('로그인에 실패')
+    }
+  };
 
   return (
     <div className="bg-[#252836] flex justify-center items-center min-h-screen px-4">
@@ -41,6 +61,8 @@ export const Login = () => {
               type="text"
               placeholder="아이디를 입력하세요"
               className="w-full p-2 mb-2 text-sm text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.userId}
+              onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
             />
             <img src={line1} alt="Line1" className="w-full h-px mb-3" />
 
@@ -49,10 +71,15 @@ export const Login = () => {
               type="password"
               placeholder="비밀번호를 입력하세요"
               className="w-full p-2 mb-2 text-sm text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={formData.userPwd}
+              onChange={(e) => setFormData({ ...formData, userPwd: e.target.value })}
             />
             <img src={line2} alt="Line2" className="w-full h-px mb-3" />
 
-            <button className="bg-[#3C5BFE] w-full text-white py-2 text-sm rounded-md mt-2 hover:bg-[#2a43c7] transition">
+            <button
+              className="bg-[#3C5BFE] w-full text-white py-2 text-sm rounded-md mt-2 hover:bg-[#2a43c7] transition"
+              onClick={handleLogin}
+            >
               login
             </button>
 

@@ -11,4 +11,13 @@ export const AuthAPI = {
     const { data } = await apiClient.post<LoginResponse>('/users/login', formData);
     return data;
   },
+
+  logout: async (accessToken: string) => {
+    const { data } = await apiClient.get('/users/logout', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return data;
+  },
 };
