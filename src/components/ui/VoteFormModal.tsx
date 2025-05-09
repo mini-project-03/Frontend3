@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from './Modal';
 import { useUIStore } from '@/stores/uiStore';
 
@@ -10,8 +10,15 @@ export default function VoteFormModal() {
   const [max, setMax] = useState(4);
   const [meetingStart, setMeetingStart] = useState('');
   const [meetingEnd, setMeetingEnd] = useState('');
-  // deadline은 약속 시간 10분 전 자동 설정으로 수정 예정
   const [deadline, setDeadline] = useState('');
+
+  useEffect(() => {
+    if (meetingStart) {
+      const start = new Date(meetingStart);
+      const tenMinutesBefore = new Date(start.getTime() - 10 * 60 * 1000);
+      setDeadline(tenMinutesBefore.toISOString().slice(0, 16));
+    }
+  }, [meetingStart]);
 
   const handleCreate = () => {
     if (!title || !meetingStart || !meetingEnd) {
@@ -77,8 +84,9 @@ export default function VoteFormModal() {
         <input
           type="datetime-local"
           value={deadline}
+          disabled
           onChange={(e) => setDeadline(e.target.value)}
-          className="p-1 rounded bg-zinc-700 text-white"
+          className="p-1 rounded bg-zinc-700 text-white opacity-70 cursor-not-allowed"
         />
       </div>
 
