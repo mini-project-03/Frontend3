@@ -10,7 +10,28 @@ export default function VoteFormModal() {
   const [max, setMax] = useState(4);
   const [meetingStart, setMeetingStart] = useState('');
   const [meetingEnd, setMeetingEnd] = useState('');
+  // deadline은 약속 시간 10분 전 자동 설정으로 수정 예정
   const [deadline, setDeadline] = useState('');
+
+  const handleCreate = () => {
+    if (!title || !meetingStart || !meetingEnd) {
+      alert('모든 항목을 올바르게 입력해주세요.');
+      return;
+    }
+
+    const voteData = {
+      title,
+      description,
+      max,
+      meetingStart,
+      meetingEnd,
+      deadline,
+    };
+
+    console.log('생성된 투표: ', voteData);
+    // 서버 전송 예정
+    closeVoteForm();
+  };
 
   return (
     <Modal isOpen={isVoteFormOpen} onClose={closeVoteForm}>
@@ -81,7 +102,10 @@ export default function VoteFormModal() {
           className="w-full h-24 p-2 rounded-md bg-zinc-700 resize-none"
         />
 
-        <button className="bg-primary text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap">
+        <button
+          onClick={handleCreate}
+          className="bg-primary text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap"
+        >
           <span>➕</span>투표 생성
         </button>
       </div>
