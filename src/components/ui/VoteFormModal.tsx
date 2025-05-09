@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Modal from './Modal';
 import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
+import { Vote } from '@/types/vote';
 
 export default function VoteFormModal() {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
@@ -46,6 +47,11 @@ export default function VoteFormModal() {
     const start = new Date(meetingStart);
     const end = new Date(meetingEnd);
 
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      alert('유효한 날짜를 입력해주세요.');
+      return;
+    }
+
     if (start < now) {
       alert('약속 시작 시간은 현재 시각보다 이후여야 합니다.');
       return;
@@ -56,7 +62,12 @@ export default function VoteFormModal() {
       return;
     }
 
-    const voteData = {
+    if (max < 1 || max > 30) {
+      alert('모집 인원은 1명 이상 100명 이하로 설정해주세요.');
+      return;
+    }
+
+    const voteData: Omit<Vote, 'id'> = {
       title,
       description,
       max,
