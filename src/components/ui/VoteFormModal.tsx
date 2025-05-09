@@ -12,11 +12,16 @@ export default function VoteFormModal() {
   const [meetingEnd, setMeetingEnd] = useState('');
   const [deadline, setDeadline] = useState('');
 
+  function toDatetimeLocalFormat(date: Date) {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  }
+
   useEffect(() => {
     if (meetingStart) {
       const start = new Date(meetingStart);
       const tenMinutesBefore = new Date(start.getTime() - 10 * 60 * 1000);
-      setDeadline(tenMinutesBefore.toISOString().slice(0, 16));
+      setDeadline(toDatetimeLocalFormat(tenMinutesBefore));
     }
   }, [meetingStart]);
 
