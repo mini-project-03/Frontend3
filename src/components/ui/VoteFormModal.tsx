@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import Modal from './Modal';
 import { useUIStore } from '@/stores/uiStore';
+import { useVoteStore } from '@/stores/voteStore';
 
 export default function VoteFormModal() {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
+  const createVote = useVoteStore((s) => s.createVote);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -25,9 +27,32 @@ export default function VoteFormModal() {
     }
   }, [meetingStart]);
 
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setMax(4);
+    setMeetingStart('');
+    setMeetingEnd('');
+    setDeadline('');
+  };
+
   const handleCreate = () => {
     if (!title || !meetingStart || !meetingEnd) {
       alert('모든 항목을 올바르게 입력해주세요.');
+      return;
+    }
+
+    const now = new Date();
+    const start = new Date(meetingStart);
+    const end = new Date(meetingEnd);
+
+    if (start < now) {
+      alert('약속 시작 시간은 현재 시각보다 이후여야 합니다.');
+      return;
+    }
+
+    if (start >= end) {
+      alert('시작 시간은 마감 시간보다 앞서야 합니다.');
       return;
     }
 
@@ -38,11 +63,13 @@ export default function VoteFormModal() {
       meetingStart,
       meetingEnd,
       deadline,
+      imageUrl: 'https://source.unsplash.com/400x300/?food',
     };
 
     console.log('생성된 투표: ', voteData);
-    // 서버 전송 예정
+    createVote(voteData);
     closeVoteForm();
+    resetForm();
   };
 
   return (
@@ -89,8 +116,8 @@ export default function VoteFormModal() {
         <input
           type="datetime-local"
           value={deadline}
-          disabled
-          onChange={(e) => setDeadline(e.target.value)}
+          readOnly
+          // onChange={(e) => setDeadline(e.target.value)}
           className="p-1 rounded bg-zinc-700 text-white opacity-70 cursor-not-allowed"
         />
       </div>

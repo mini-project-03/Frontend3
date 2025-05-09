@@ -4,6 +4,7 @@ import { create } from 'zustand';
 
 interface VoteState {
   votes: Vote[];
+  fetchVotes: () => void;
   createVote: (vote: Omit<Vote, 'id'>) => void;
 }
 
@@ -18,7 +19,7 @@ export const useVoteStore = create<VoteState>((set) => ({
         ...state.votes,
         {
           ...voteData,
-          id: Date.now(),
+          id: Date.now(), // 간이 id
         },
       ],
     })),
