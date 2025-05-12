@@ -1,10 +1,13 @@
 export interface Vote {
-  id: number;
+  voteId: number;
+  creatorId: string;
   title: string;
-  imageUrl: string;
   description: string;
-  max: number;
-  meetingStart: string;
-  meetingEnd: string;
   deadline: string;
+  meetingStartTime: string;
+  meetingEndTime: string;
+  recruit: number;
+  participants: number;
+  status: 'active' | 'closed';
+  createdAt: string;
 }

@@ -4,15 +4,15 @@ import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
 import { Vote } from '@/types/vote';
 
-export default function VoteFormModal() {
+export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote: Vote) => void }) {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
   const createVote = useVoteStore((s) => s.createVote);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [max, setMax] = useState(4);
-  const [meetingStart, setMeetingStart] = useState('');
-  const [meetingEnd, setMeetingEnd] = useState('');
+  const [recruit, setRecruit] = useState(4);
+  const [meetingStartTime, setMeetingStartTime] = useState('');
+  const [meetingEndTime, setMeetingEndTime] = useState('');
   const [deadline, setDeadline] = useState('');
 
   function toDatetimeLocalFormat(date: Date) {
@@ -21,31 +21,31 @@ export default function VoteFormModal() {
   }
 
   useEffect(() => {
-    if (meetingStart) {
-      const start = new Date(meetingStart);
+    if (meetingStartTime) {
+      const start = new Date(meetingStartTime);
       const tenMinutesBefore = new Date(start.getTime() - 10 * 60 * 1000);
       setDeadline(toDatetimeLocalFormat(tenMinutesBefore));
     }
-  }, [meetingStart]);
+  }, [meetingStartTime]);
 
   const resetForm = () => {
     setTitle('');
     setDescription('');
-    setMax(4);
-    setMeetingStart('');
-    setMeetingEnd('');
+    setRecruit(4);
+    setMeetingStartTime('');
+    setMeetingEndTime('');
     setDeadline('');
   };
 
   const handleCreate = () => {
-    if (!title || !meetingStart || !meetingEnd) {
+    if (!title || !meetingStartTime || !meetingEndTime) {
       alert('모든 항목을 올바르게 입력해주세요.');
       return;
     }
 
     const now = new Date();
-    const start = new Date(meetingStart);
-    const end = new Date(meetingEnd);
+    const start = new Date(meetingStartTime);
+    const end = new Date(meetingEndTime);
 
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       alert('유효한 날짜를 입력해주세요.');
@@ -62,7 +62,7 @@ export default function VoteFormModal() {
       return;
     }
 
-    if (max < 1 || max > 30) {
+    if (recruit < 1 || recruit > 30) {
       alert('모집 인원은 1명 이상 100명 이하로 설정해주세요.');
       return;
     }
@@ -70,15 +70,19 @@ export default function VoteFormModal() {
     const voteData: Omit<Vote, 'id'> = {
       title,
       description,
-      max,
-      meetingStart,
-      meetingEnd,
+      recruit,
+      meetingStartTime,
+      meetingEndTime,
       deadline,
-      imageUrl: 'https://source.unsplash.com/400x300/?food',
+      voteId: 0, // 서버에서 새로운 id를 생성하도록 해야 함
+      creatorId: '김씨', // 예시로 고정값
+      participants: 0,
+      status: 'active',
+      createdAt: new Date().toISOString(), // 생성 날짜
     };
 
     console.log('생성된 투표: ', voteData);
-    createVote(voteData);
+    onCreateVote(voteData);
     closeVoteForm();
     resetForm();
   };
@@ -106,8 +110,8 @@ export default function VoteFormModal() {
         <label className="text-white whitespace-nowrap">약속 시작 시간</label>
         <input
           type="datetime-local"
-          value={meetingStart}
-          onChange={(e) => setMeetingStart(e.target.value)}
+          value={meetingStartTime}
+          onChange={(e) => setMeetingStartTime(e.target.value)}
           className="p-1 rounded bg-zinc-700 text-white"
         />
       </div>
@@ -116,8 +120,8 @@ export default function VoteFormModal() {
         <label className="text-white whitespace-nowrap">약속 마감 시간</label>
         <input
           type="datetime-local"
-          value={meetingEnd}
-          onChange={(e) => setMeetingEnd(e.target.value)}
+          value={meetingEndTime}
+          onChange={(e) => setMeetingEndTime(e.target.value)}
           className="p-1 rounded bg-zinc-700 text-white"
         />
       </div>
@@ -136,8 +140,8 @@ export default function VoteFormModal() {
         <label className="text-white whitespace-nowrap">투표 모집 인원</label>
         <input
           type="number"
-          value={max}
-          onChange={(e) => setMax(Number(e.target.value))}
+          value={recruit}
+          onChange={(e) => setRecruit(Number(e.target.value))}
           min={1}
           max={20}
           className="p-1 rounded bg-zinc-700 text-white"
