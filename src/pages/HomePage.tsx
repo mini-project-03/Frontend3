@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useUIStore } from '@/stores/uiStore';
-import VoteFormModal from '@/components/ui/VoteFormModal';
+import VoteFormModal from '@/components/vote/VoteFormModal';
 
 const HomePage = () => {
   const navigate = useNavigate();

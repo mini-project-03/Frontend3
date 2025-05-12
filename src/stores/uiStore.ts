@@ -7,7 +7,7 @@ interface UIState {
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  isVoteFormOpen: true,
+  isVoteFormOpen: false,
   openVoteForm: () => set({ isVoteFormOpen: true }),
   closeVoteForm: () => set({ isVoteFormOpen: false }),
 }));
