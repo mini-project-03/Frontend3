@@ -2,8 +2,8 @@ import React from 'react';
 
 interface FoodItemProps {
   title: string;
-  votes: number;
-  totalVotes: number;
+  participants: number;
+  recruit: number;
   id: number;
   meetingStartTime: string;
   creatorId: string;
@@ -11,23 +11,26 @@ interface FoodItemProps {
 
 const FoodItem: React.FC<FoodItemProps> = ({
   title,
-  votes,
-  totalVotes,
+  participants,
+  recruit,
   id,
   meetingStartTime,
   creatorId,
 }) => {
-  const votePercentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0;
+  const votePercentage = recruit > 0 ? (participants / recruit) * 100 : 0;
 
   const images = [
     '/public/food1.png',
     '/public/food2.png',
-    '/public/image 15.png',
-    '/public/image 16.png',
+    '/public/food3.png',
+    '/public/food4.png',
+    '/public/food5.png',
+    '/public/food6.png',
+    '/public/food7.png',
+    '/public/food8.png',
   ];
   const randomImage = images[Math.floor(Math.random() * images.length)];
 
-  // 약속 시간 형식화 함수
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
 
@@ -50,18 +53,18 @@ const FoodItem: React.FC<FoodItemProps> = ({
 
         <h3 className="text-l font-semibold mt-2 text-primary">{title}</h3>
 
-        <p className="text-white mt-2">작성자: {creatorId}</p>
+        <p className="text-white mt-2">{creatorId}</p>
 
         <div className="flex justify-between text-white mt-2">
           <p>{formatDate(meetingStartTime)}</p>
           <p className="text-secondary">
-            {votes}/{totalVotes}
+            {participants || 0}/{recruit || 0}
           </p>
         </div>
 
-        <div className="w-full h-4 rounded-full mt-2">
+        <div className="bg-white w-full h-6 rounded-full mt-2">
           <div
-            className="bg-secondary h-4 rounded-full"
+            className="bg-secondary h-6 rounded-full"
             style={{ width: `${votePercentage}%` }}
           ></div>
         </div>
