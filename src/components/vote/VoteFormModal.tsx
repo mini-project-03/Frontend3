@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Modal from '../ui/Modal';
 import ConfirmModal from '../ui/confirmModal'; // ✅ 추가
+
 import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
 import { Vote } from '@/types/vote';
