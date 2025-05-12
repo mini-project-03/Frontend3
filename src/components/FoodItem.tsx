@@ -1,3 +1,5 @@
+import { useUIStore } from '@/stores/uiStore';
+import { Vote } from '@/types/vote';
 import React from 'react';
 
 interface FoodItemProps {
@@ -42,8 +44,31 @@ const FoodItem: React.FC<FoodItemProps> = ({
     return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
   };
 
+  const openVoteDetail = useUIStore((s) => s.openVoteDetail);
+
+  const handleClick = () => {
+    const vote: Vote = {
+      voteId: id,
+      creatorId,
+      title,
+      description: '', // 임시 또는 추후 props로 전달
+      deadline: new Date().toISOString(), // 임시
+      meetingStartTime,
+      meetingEndTime: meetingStartTime, // 임시
+      recruit,
+      participants,
+      status: 'active',
+      createdAt: new Date().toISOString(),
+    };
+    openVoteDetail(vote);
+  };
+
   return (
-    <div key={id} className="bg-item-background p-6 rounded-md shadow-md w-[309px] h-[427px]">
+    <div
+      key={id}
+      onClick={handleClick}
+      className="cursor-pointer bg-item-background p-6 rounded-md shadow-md w-[309px] h-[427px] hover:opacity-90 transition"
+    >
       <div className="mb-4">
         <img
           src={randomImage}

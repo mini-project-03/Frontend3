@@ -5,6 +5,7 @@ import { mockVotes } from '@/data/mockVotes';
 import FoodItem from '@/components/FoodItem';
 import { useUIStore } from '@/stores/uiStore';
 import VoteFormModal from '@/components/vote/VoteFormModal';
+import VoteDetailModal from '@/components/vote/VoteDetailModal';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        const mockVotes = await FoodAPI.getFoods();
+        //const mockVotes = await FoodAPI.getFoods();
         setFoods(mockVotes);
       } catch (error) {
         console.error('음식 데이터를 가져오는 데 실패:', error);
@@ -52,6 +53,7 @@ const HomePage = () => {
           </div>
         ))}
       </div>
+      <VoteDetailModal />
 
       {/* 랭킹은 일단 비워두겠숩니ㅏ */}
       <div className="w-1/4 bg-secondary h-[770px] rounded-lg p-4 flex flex-col justify-around items-center">
