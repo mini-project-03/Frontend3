@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaFacebookF, FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
 
-import image1 from '/public/image 1.png'
-import image2 from '/public/register.png'
+import image1 from '/public/image 1.png';
+import image2 from '/public/register.png';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -30,8 +30,7 @@ const Register = () => {
   };
 
   // 이메일 유효성 검사
-  const isValidEmail = (email: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   // 폼 제출
   const handleSubmit = (e: React.FormEvent) => {
@@ -131,13 +130,13 @@ const Register = () => {
 
 // Input 컴포넌트
 const Input = ({
-                 label,
-                 name,
-                 value,
-                 onChange,
-                 error,
-                 type = 'text',
-               }: {
+  label,
+  name,
+  value,
+  onChange,
+  error,
+  type = 'text',
+}: {
   label: string;
   name: string;
   value: string;
