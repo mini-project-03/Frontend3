@@ -5,7 +5,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   return (
-    <header className="w-full bg-background px-6 py-4 flex justify-between items-center border-b border-gray-700">
+    <header className="container mx-auto w-full bg-background px-6 py-4 flex justify-between items-center border-b border-gray-700">
       <div className="flex items-center">
         <span className="text-primary text-3xl font-baloo-bhaijaan font-semibold mr-2">Momuk</span>
         <img src={image1} alt="Momuk Logo" className="w-8 h-8" />
