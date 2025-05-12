@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Modal from './Modal';
+import Modal from '../ui/Modal';
 import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
 import { Vote } from '@/types/vote';
@@ -128,7 +128,6 @@ export default function VoteFormModal() {
           type="datetime-local"
           value={deadline}
           readOnly
-          // onChange={(e) => setDeadline(e.target.value)}
           className="p-1 rounded bg-zinc-700 text-white opacity-70 cursor-not-allowed"
         />
       </div>
