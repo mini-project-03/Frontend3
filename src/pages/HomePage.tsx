@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { FoodAPI } from '@/api/foodAPI';
+import { VoteAPI } from '@/api/voteAPI';
 import { mockVotes } from '@/data/mockVotes';
-import FoodItem from '@/components/FoodItem';
+import FoodItem from '@/components/VoteItem';
 import { useUIStore } from '@/stores/uiStore';
 import VoteFormModal from '@/components/vote/VoteFormModal';
 
@@ -16,7 +16,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        const mockVotes = await FoodAPI.getFoods();
+        const mockVotes = await VoteAPI.getVotes();
         setFoods(mockVotes);
       } catch (error) {
         console.error('음식 데이터를 가져오는 데 실패:', error);

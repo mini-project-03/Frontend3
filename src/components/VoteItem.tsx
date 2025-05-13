@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface FoodItemProps {
+interface VoteItemProps {
   title: string;
   participants: number;
   recruit: number;
@@ -9,7 +9,7 @@ interface FoodItemProps {
   creatorId: string;
 }
 
-const FoodItem: React.FC<FoodItemProps> = ({
+const FoodItem: React.FC<VoteItemProps> = ({
   title,
   participants,
   recruit,

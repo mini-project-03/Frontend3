@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import Modal from '../ui/Modal';
 import ConfirmModal from '../ui/confirmModal'; // ✅ 추가
-
 import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
-import { Vote } from '@/types/vote';
+import { VoteRequest } from '@/types/vote';
 
-export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote: Vote) => void }) {
+export default function VoteFormModal({
+  onCreateVote,
+}: {
+  onCreateVote: (newVote: VoteRequest) => void;
+}) {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
   const createVote = useVoteStore((s) => s.createVote);
 
@@ -71,7 +74,7 @@ export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote
       return;
     }
 
-    const voteData: Omit<Vote, 'id'> = {
+    const voteData: Omit<VoteRequest, 'id'> = {
       title,
       description,
       recruit,
