@@ -1,9 +1,10 @@
 import { useUIStore } from '@/stores/uiStore';
 import { useState } from 'react';
-import Modal from '../ui/Modal';
-import ConfirmModal from '../ui/confirmModal';
+
 import { Vote } from '@/types/vote';
 import VoteFormContent from './VoteFormContent';
+import Modal from '@/components/ui/Modal';
+import ConfirmModal from '@/components/ui/confirmModal';
 
 export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote: Vote) => void }) {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();

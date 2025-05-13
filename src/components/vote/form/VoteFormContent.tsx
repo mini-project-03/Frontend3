@@ -1,10 +1,10 @@
 import { Vote } from '@/types/vote';
 import { useState, useEffect } from 'react';
-import ConfirmModal from '../ui/confirmModal';
-import Modal from '../ui/Modal';
 import { validateVoteForm } from '@/utils/validation';
 import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
 import { useUIStore } from '@/stores/uiStore';
+import Modal from '@/components/ui/Modal';
+import ConfirmModal from '@/components/ui/confirmModal';
 
 export default function VoteFormContent({ onSubmit }: { onSubmit: (data: Vote) => void }) {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();

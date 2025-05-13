@@ -4,8 +4,8 @@ import { FoodAPI } from '@/api/foodAPI';
 import { mockVotes } from '@/data/mockVotes';
 import FoodItem from '@/components/FoodItem';
 import { useUIStore } from '@/stores/uiStore';
-import VoteFormModal from '@/components/vote/VoteFormModal';
-import VoteDetailModal from '@/components/vote/VoteDetailModal';
+import VoteFormModal from '@/components/vote/form/VoteFormModal';
+import VoteDetailModal from '@/components/vote/detail/VoteDetailModal';
 
 const HomePage = () => {
   const navigate = useNavigate();
