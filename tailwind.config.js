@@ -6,6 +6,7 @@ export default {
       colors: {
         primary: '#ffa49b',
         'primary-variant': '#ffdbd7',
+        'primary-hover': '#f28174',
         secondary: '#9bb4ff',
         error: '#FF0000',
         background: '#252836',

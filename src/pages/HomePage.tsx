@@ -5,6 +5,7 @@ import { mockVotes } from '@/data/mockVotes';
 import FoodItem from '@/components/FoodItem';
 import { useUIStore } from '@/stores/uiStore';
 import VoteFormModal from '@/components/vote/VoteFormModal';
+import VoteDetailModal from '@/components/vote/VoteDetailModal';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        const mockVotes = await FoodAPI.getFoods();
+        // const mockVotes = await FoodAPI.getFoods();
         setFoods(mockVotes);
       } catch (error) {
         console.error('음식 데이터를 가져오는 데 실패:', error);
@@ -39,19 +40,13 @@ const HomePage = () => {
   return (
     <div className="container overflow-hidden mx-auto px-4 py-4 flex gap-6">
       <div className="flex-1 grid gap-4 overflow-y-auto h-[770px] grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
-        {foods.map((food) => (
-          <div key={food.voteId} className="bg-gray-800 p-4 rounded-lg">
-            <FoodItem
-              title={food.title}
-              participants={food.participants}
-              recruit={food.recruit}
-              id={food.voteId}
-              meetingStartTime={food.meetingStartTime}
-              creatorId={food.creatorId}
-            />
+        {foods.map((vote) => (
+          <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
+            <FoodItem vote={vote} />
           </div>
         ))}
       </div>
+      <VoteDetailModal />
 
       {/* 랭킹은 일단 비워두겠숩니ㅏ */}
       <div className="w-1/4 bg-secondary h-[770px] rounded-lg p-4 flex flex-col justify-around items-center">

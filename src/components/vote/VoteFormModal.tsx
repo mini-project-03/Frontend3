@@ -163,7 +163,7 @@ export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote
 
           <button
             onClick={handleCreate}
-            className="bg-primary text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap"
+            className="bg-primary hover:bg-primary-hover text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap"
           >
             <span>➕</span>투표 생성
           </button>
