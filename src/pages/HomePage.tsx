@@ -40,16 +40,9 @@ const HomePage = () => {
   return (
     <div className="container overflow-hidden mx-auto px-4 py-4 flex gap-6">
       <div className="flex-1 grid gap-4 overflow-y-auto h-[770px] grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
-        {foods.map((food) => (
-          <div key={food.voteId} className="bg-gray-800 p-4 rounded-lg">
-            <FoodItem
-              title={food.title}
-              participants={food.participants}
-              recruit={food.recruit}
-              id={food.voteId}
-              meetingStartTime={food.meetingStartTime}
-              creatorId={food.creatorId}
-            />
+        {foods.map((vote) => (
+          <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
+            <FoodItem vote={vote} />
           </div>
         ))}
       </div>

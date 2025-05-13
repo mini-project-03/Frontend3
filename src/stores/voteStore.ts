@@ -7,13 +7,16 @@ import { create } from 'zustand';
 interface VoteState {
   votes: Vote[];
   participantList: User[] | null;
+  selectedVote: Vote | null;
   fetchVotes: () => void;
   createVote: (vote: Omit<Vote, 'voteId' | 'participants' | 'status' | 'createdAt'>) => void;
+  setSelectedVote: (vote: Vote) => void;
 }
 
 export const useVoteStore = create<VoteState>((set) => ({
   votes: [],
   participantList: null,
+  selectedVote: null,
 
   fetchVotes: () => {
     set({ votes: mockVotes });
@@ -29,4 +32,6 @@ export const useVoteStore = create<VoteState>((set) => ({
     };
     set((state) => ({ votes: [...state.votes, newVote] }));
   },
+
+  setSelectedVote: (vote) => set({ selectedVote: vote }),
 }));
