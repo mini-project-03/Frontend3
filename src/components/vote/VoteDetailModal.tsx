@@ -1,6 +1,8 @@
 import { useVoteStore } from '@/stores/voteStore';
 import Modal from '../ui/Modal';
 import { useUIStore } from '@/stores/uiStore';
+import { formatTime } from '@/utils/dateFormatter';
+import ParticipationChart from './ParticipationChart';
 
 export default function VoteDetailModal() {
   const { selectedVote, participateInVote, clearSelectedVote } = useVoteStore();
@@ -9,11 +11,6 @@ export default function VoteDetailModal() {
   if (!selectedVote) return null;
 
   const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
-
-  const formatTime = (iso: string) => {
-    const d = new Date(iso);
-    return `${d.getMonth() + 1}월 ${d.getDate()}일 ${d.getHours()}시`;
-  };
 
   const currentUser = {
     id: 'user123',
@@ -63,33 +60,7 @@ export default function VoteDetailModal() {
 
           <div className="flex flex-col items-center gap-2">
             <div className="text-sm text-white font-semibold">참여율</div>
-
-            <div className="w-28 h-28 relative">
-              <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 36 36">
-                <path
-                  className="text-zinc-700"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                  d="M18 2.0845
-            a 15.9155 15.9155 0 0 1 0 31.831
-            a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-                <path
-                  className="text-primary"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                  strokeDasharray={`${participationRate}, 100`}
-                  d="M18 2.0845
-            a 15.9155 15.9155 0 0 1 0 31.831
-            a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center text-primary font-bold text-lg">
-                {participationRate}%
-              </div>
-            </div>
+            <ParticipationChart rate={participationRate} />
           </div>
         </div>
 

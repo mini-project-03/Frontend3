@@ -161,13 +161,22 @@ export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote
             className="w-full h-24 p-2 rounded-md bg-zinc-700 resize-none text-white"
           />
 
-        <button
-          onClick={handleCreate}
-          className="bg-primary hover:bg-primary-hover text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap"
-        >
-          <span>➕</span>투표 생성
-        </button>
-      </div>
-    </Modal>
+          <button
+            onClick={handleCreate}
+            className="bg-primary hover:bg-primary-hover text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap"
+          >
+            <span>➕</span>투표 생성
+          </button>
+        </div>
+      </Modal>
+
+      {/* ✅ 확인 모달 렌더링 */}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="투표가 만들어졌어요!"
+        description="같이 갈 팀원을 만나보아요 😊"
+        onClose={() => setIsConfirmOpen(false)}
+      />
+    </>
   );
 }

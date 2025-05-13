@@ -17,7 +17,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchFoods = async () => {
       try {
-        //const mockVotes = await FoodAPI.getFoods();
+        // const mockVotes = await FoodAPI.getFoods();
         setFoods(mockVotes);
       } catch (error) {
         console.error('음식 데이터를 가져오는 데 실패:', error);
