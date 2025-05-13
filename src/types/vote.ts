@@ -1,5 +1,4 @@
-export interface VoteRequest {
-  voteId: number;
+interface VoteBase {
   creatorId: string;
   title: string;
   description: string;
@@ -7,12 +6,11 @@ export interface VoteRequest {
   meetingStartTime: string;
   meetingEndTime: string;
   recruit: number;
-  participants: number;
-  status: 'active' | 'closed';
-  createdAt: string;
 }
 
-export interface VoteResponse extends VoteRequest {
+export interface VoteRequest extends VoteBase {}
+
+export interface VoteResponse extends VoteBase {
   voteId: number;
   participants: number;
   status: 'active' | 'closed';

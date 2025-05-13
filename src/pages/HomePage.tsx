@@ -10,7 +10,7 @@ import { VoteResponse } from '@/types/vote'; // VoteResponse 타입 사용
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [votes, setVotes] = useState<any[]>([]);
+  const [votes, setVotes] = useState<VoteResponse[]>([]);
 
   const openVoteForm = useUIStore((s) => s.openVoteForm);
 
