@@ -67,7 +67,7 @@ export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote
     }
 
     if (recruit < 1 || recruit > 30) {
-      alert('모집 인원은 1명 이상 100명 이하로 설정해주세요.');
+      alert('모집 인원은 1명 이상 30명 이하로 설정해주세요.');
       return;
     }
 
@@ -148,7 +148,7 @@ export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote
             value={recruit}
             onChange={(e) => setRecruit(Number(e.target.value))}
             min={1}
-            max={20}
+            max={30}
             className="p-1 rounded bg-zinc-700 text-white"
           />
         </div>
