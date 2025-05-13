@@ -1,49 +1,60 @@
+import { useUIStore } from '@/stores/uiStore';
+import { useVoteStore } from '@/stores/voteStore';
+import { VoteResponse } from '@/types/vote';
 import React from 'react';
 
+// interface VoteItemProps {
+//   title: string;
+//   participants: number;
+//   recruit: number;
+//   id: number;
+//   meetingStartTime: string;
+//   creatorId: string;
+// }
+
 interface VoteItemProps {
-  title: string;
-  participants: number;
-  recruit: number;
-  id: number;
-  meetingStartTime: string;
-  creatorId: string;
+  vote: VoteResponse; // VoteResponse 타입 사용
 }
 
-const FoodItem: React.FC<VoteItemProps> = ({
-  title,
-  participants,
-  recruit,
-  id,
-  meetingStartTime,
-  creatorId,
-}) => {
+const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
+  const { voteId, title, participants, recruit, meetingStartTime, creatorId, image } = vote;
   const votePercentage = recruit > 0 ? (participants / recruit) * 100 : 0;
 
   const images = [
-    '/public/food1.png',
-    '/public/food2.png',
-    '/public/food3.png',
-    '/public/food4.png',
-    '/public/food5.png',
-    '/public/food6.png',
-    '/public/food7.png',
-    '/public/food8.png',
+    '/food1.png',
+    '/food2.png',
+    '/food3.png',
+    '/food4.png',
+    '/food5.png',
+    '/food6.png',
+    '/food7.png',
+    '/food8.png',
   ];
   const randomImage = images[Math.floor(Math.random() * images.length)];
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const hours = date.getHours();
     const minutes = date.getMinutes();
-
     return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
   };
 
+  const setSelectedVote = useVoteStore((s) => s.setSelectedVote);
+  const openVoteDetail = useUIStore((s) => s.openVoteDetail);
+
+  const handleClick = () => {
+    setSelectedVote(vote);
+    openVoteDetail(vote);
+  };
+
   return (
-    <div key={id} className="bg-item-background p-6 rounded-md shadow-md w-[309px] h-[427px]">
+    <div
+      key={voteId}
+      onClick={handleClick}
+      className="cursor-pointer bg-item-background p-6 rounded-md shadow-md w-[309px] h-[427px] hover:opacity-90 transition"
+    >
       <div className="mb-4">
         <img
           src={randomImage}
@@ -73,4 +84,4 @@ const FoodItem: React.FC<VoteItemProps> = ({
   );
 };
 
-export default FoodItem;
+export default VoteItem;
