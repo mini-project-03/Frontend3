@@ -6,11 +6,13 @@ import { create } from 'zustand';
 
 interface VoteState {
   votes: Vote[];
-  participantList: User[] | null;
   selectedVote: Vote | null;
+  participantList: User[] | null;
   fetchVotes: () => void;
   createVote: (vote: Omit<Vote, 'voteId' | 'participants' | 'status' | 'createdAt'>) => void;
   setSelectedVote: (vote: Vote) => void;
+  clearSelectedVote: () => void;
+  participateInVote: (voteId: number, user: User) => void;
 }
 
 export const useVoteStore = create<VoteState>((set) => ({
@@ -34,4 +36,29 @@ export const useVoteStore = create<VoteState>((set) => ({
   },
 
   setSelectedVote: (vote) => set({ selectedVote: vote }),
+  clearSelectedVote: () => set({ selectedVote: null }),
+
+  participateInVote: (voteId, user) => {
+    set((state) => {
+      const updatedVotes = state.votes.map((vote) => {
+        if (vote.voteId === voteId) {
+          return {
+            ...vote,
+            participants: vote.participants + 1,
+          };
+        }
+        return vote;
+      });
+
+      const updatedSelectedVote =
+        state.selectedVote?.voteId === voteId
+          ? { ...state.selectedVote, participants: state.selectedVote.participants + 1 }
+          : state.selectedVote;
+
+      return {
+        votes: updatedVotes,
+        selectedVote: updatedSelectedVote,
+      };
+    });
+  },
 }));

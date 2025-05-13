@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 interface UIState {
   isVoteFormOpen: boolean;
-  selectedVote: Vote | null;
+  isVoteDetailOpen: boolean;
   openVoteForm: () => void;
   closeVoteForm: () => void;
   openVoteDetail: (vote: Vote) => void;
@@ -12,9 +12,9 @@ interface UIState {
 
 export const useUIStore = create<UIState>((set) => ({
   isVoteFormOpen: false,
-  selectedVote: null,
+  isVoteDetailOpen: false,
   openVoteForm: () => set({ isVoteFormOpen: true }),
   closeVoteForm: () => set({ isVoteFormOpen: false }),
-  openVoteDetail: (vote) => set({ selectedVote: vote }),
-  closeVoteDetail: () => set({ selectedVote: null }),
+  openVoteDetail: () => set({ isVoteDetailOpen: true }),
+  closeVoteDetail: () => set({ isVoteDetailOpen: false }),
 }));

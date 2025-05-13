@@ -1,4 +1,5 @@
 import { useUIStore } from '@/stores/uiStore';
+import { useVoteStore } from '@/stores/voteStore';
 import { Vote } from '@/types/vote';
 import React from 'react';
 
@@ -32,9 +33,11 @@ const FoodItem: React.FC<FoodItemProps> = ({ vote }) => {
     return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
   };
 
+  const setSelectedVote = useVoteStore((s) => s.setSelectedVote);
   const openVoteDetail = useUIStore((s) => s.openVoteDetail);
 
   const handleClick = () => {
+    setSelectedVote(vote);
     openVoteDetail(vote);
   };
 

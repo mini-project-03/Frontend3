@@ -3,8 +3,8 @@ import Modal from '../ui/Modal';
 import { useUIStore } from '@/stores/uiStore';
 
 export default function VoteDetailModal() {
-  const { participantList } = useVoteStore();
-  const { selectedVote, closeVoteDetail } = useUIStore();
+  const { selectedVote, participateInVote, clearSelectedVote } = useVoteStore();
+  const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
 
   if (!selectedVote) return null;
 
@@ -15,19 +15,36 @@ export default function VoteDetailModal() {
     return `${d.getMonth() + 1}월 ${d.getDate()}일 ${d.getHours()}시`;
   };
 
+  const currentUser = {
+    id: 'user123',
+    name: '홍길동',
+  };
+
+  const handleParticipate = () => {
+    if (!selectedVote) return;
+    participateInVote(selectedVote.voteId, currentUser); // currentUser는 로그인 유저
+  };
+
+  const handleClose = () => {
+    clearSelectedVote();
+    closeVoteDetail();
+  };
+
   return (
-    <Modal isOpen={!!selectedVote} onClose={closeVoteDetail}>
+    <Modal isOpen={!!selectedVote} onClose={handleClose}>
       <div className="relative p-2 w-[px] text-white rounded-xl">
         <button
-          onClick={closeVoteDetail}
+          onClick={handleClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-white"
         ></button>
+        <div className="mb-1">
+          <div className="text-2xl font-bold text-white">{selectedVote.title}</div>
+          <div className="text-sm text-gray-400 text-right">{selectedVote.creatorId}</div>
+        </div>
+        <hr className="border-t border-gray-600 mt-2" />
+        <p className="mt-4 mb-4 text-gray-200 whitespace-pre-line">{selectedVote.description}</p>
 
-        <div className="text-xl font-bold mb-1">{selectedVote.title}</div>
-        <div className="text-sm text-gray-300 mb-4">{selectedVote.creatorId}</div>
-        <p className="mb-4 text-gray-200 whitespace-pre-line">{selectedVote.description}</p>
-
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-sm font-medium">
               <span>👥 참여자</span>
@@ -44,51 +61,53 @@ export default function VoteDetailModal() {
             </div>
           </div>
 
-          <div className="w-20 h-20 relative">
-            <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 36 36">
-              <path
-                className="text-zinc-700"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-                d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-              <path
-                className="text-pink-400"
-                stroke="currentColor"
-                strokeWidth="4"
-                fill="none"
-                strokeDasharray={`${participationRate}, 100`}
-                d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center text-pink-400 font-bold text-sm">
-              {participationRate}%
+          <div className="flex flex-col items-center gap-2">
+            <div className="text-sm text-white font-semibold">참여율</div>
+
+            <div className="w-28 h-28 relative">
+              <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 36 36">
+                <path
+                  className="text-zinc-700"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                  d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path
+                  className="text-primary"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                  strokeDasharray={`${participationRate}, 100`}
+                  d="M18 2.0845
+            a 15.9155 15.9155 0 0 1 0 31.831
+            a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center text-primary font-bold text-lg">
+                {participationRate}%
+              </div>
             </div>
           </div>
         </div>
 
         <div className="mt-4">
-          <div className="text-sm text-white mb-2">참여자</div>
-          {/* <div className="flex flex-wrap gap-2">
-            {participantList.map((user) => (
-              <div
-                key={user.id}
-                className="flex items-center gap-2 px-2 py-1 bg-zinc-700 rounded text-sm text-white"
-              >
-                {user.name}
-              </div>
-            ))}
-          </div> */}
+          <div className="text-sm text-white flex flex-col items-start gap-1">
+            <img src="/participants.png" alt="Participants" className="w-11 h-8" />
+            <p>참여자</p>
+          </div>
         </div>
 
-        <button className="w-full bg-primary hover:bg-primary-variant text-white py-2 rounded font-bold mt-4">
-          👍 참여
-        </button>
+        <div className="mt-auto flex justify-end">
+          <button
+            onClick={handleParticipate}
+            className="bg-primary hover:bg-primary-hover transition text-white py-2 px-7 rounded-lg font-semibold text-base flex items-center gap-2"
+          >
+            👍 참여
+          </button>
+        </div>
       </div>
     </Modal>
   );
