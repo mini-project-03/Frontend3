@@ -1,4 +1,3 @@
-import { Vote } from '@/types/vote';
 import { create } from 'zustand';
 
 interface UIState {
@@ -6,7 +5,7 @@ interface UIState {
   isVoteDetailOpen: boolean;
   openVoteForm: () => void;
   closeVoteForm: () => void;
-  openVoteDetail: (vote: Vote) => void;
+  openVoteDetail: () => void;
   closeVoteDetail: () => void;
 }
 

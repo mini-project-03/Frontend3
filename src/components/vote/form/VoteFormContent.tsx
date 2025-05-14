@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import ConfirmModal from '@/components/ui/confirmModal';
 import { useUIStore } from '@/stores/uiStore';
-import { useVoteStore } from '@/stores/voteStore';
 import { VoteRequest } from '@/types/vote';
 import { validateVoteForm } from '@/utils/validation';
 import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
@@ -33,21 +32,17 @@ export default function VoteFormContent({ onSubmit }: { onSubmit: (data: VoteReq
       return;
     }
 
-    const voteData: Omit<VoteRequest, 'id'> = {
+    const voteData: VoteRequest = {
+      creatorId: '김씨', // 또는 userStore 등에서 가져온 값
       title,
       description,
       recruit,
       meetingStartTime,
       meetingEndTime,
       deadline,
-      voteId: 0,
-      creatorId: '김씨',
-      participants: 0,
-      status: 'active',
-      createdAt: new Date().toISOString(),
     };
 
-    onSubmit(voteData as Vote);
+    onSubmit(voteData);
     resetForm();
   };
 

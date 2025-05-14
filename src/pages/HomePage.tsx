@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { VoteAPI } from '@/api/voteAPI';
-// import { mockVotes } from '@/data/mockVotes';
+import { useVoteStore } from '@/stores/voteStore';
 import VoteItem from '@/components/VoteItem';
 import { useUIStore } from '@/stores/uiStore';
 import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
@@ -11,28 +11,14 @@ import { VoteResponse } from '@/types/vote'; // VoteResponse 타입 사용
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [votes, setVotes] = useState<VoteResponse[]>([]);
+  const votes = useVoteStore((s) => s.votes);
+  const fetchVotes = useVoteStore((s) => s.fetchVotes);
   const { requireAuth } = useRequireAuth();
   const openVoteForm = useUIStore((s) => s.openVoteForm);
 
-  // 음식 데이터 가져오기
   useEffect(() => {
-    const fetchVotes = async () => {
-      try {
-        const response = await VoteAPI.getVotes();
-        setVotes(response);
-      } catch (error) {
-        console.error('음식 데이터를 가져오는 데 실패:', error);
-      }
-    };
-
-    fetchVotes();
+    fetchVotes(); // 서버에서 투표 목록 불러오기
   }, []);
-
-  // 투표 생성 후 데이터를 화면에 반영
-  const handleCreateVote = (newVote: any) => {
-    setVotes((prevVotes) => [newVote, ...prevVotes]); // 새로운 투표 추가
-  };
 
   const handleOpenModal = () => {
     requireAuth(openVoteForm);
@@ -43,7 +29,7 @@ const HomePage = () => {
       <div className="flex-1 grid gap-4 overflow-y-auto h-[770px] grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
         {votes.map((vote) => (
           <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
-            <VoteItem vote={vote} />
+            <VoteItem key={vote.voteId} vote={vote} />
           </div>
         ))}
       </div>
@@ -59,7 +45,7 @@ const HomePage = () => {
           투표 생성 모달 열기
         </button>
 
-        <VoteFormModal onCreateVote={handleCreateVote} />
+        <VoteFormModal />
       </div>
 
       <style>{`

@@ -1,7 +1,7 @@
-// import { mockParticipants } from '@/data/mockParticipants';
-import { mockVotes } from '@/data/mockVotes';
+import { VoteAPI } from '@/api/voteAPI';
 import { User } from '@/types/user';
-import { VoteResponse } from '@/types/vote';
+import { VoteRequest, VoteResponse } from '@/types/vote';
+import axios from 'axios';
 import { create } from 'zustand';
 
 interface VoteState {
@@ -9,9 +9,7 @@ interface VoteState {
   selectedVote: VoteResponse | null;
   participantList: User[] | null;
   fetchVotes: () => void;
-  createVote: (
-    vote: Omit<VoteResponse, 'voteId' | 'participants' | 'status' | 'createdAt'>,
-  ) => void;
+  createVote: (voteData: VoteRequest) => Promise<void>;
   setSelectedVote: (vote: VoteResponse) => void;
   clearSelectedVote: () => void;
   participateInVote: (voteId: number, user: User) => void;
@@ -22,19 +20,32 @@ export const useVoteStore = create<VoteState>((set) => ({
   participantList: null,
   selectedVote: null,
 
-  fetchVotes: () => {
-    set({ votes: mockVotes });
+  fetchVotes: async () => {
+    try {
+      const voteList = await VoteAPI.getVotes();
+      set({ votes: voteList });
+    } catch (err) {
+      console.error('투표 목록 불러오기 실패:', err);
+    }
   },
 
-  createVote: (voteData) => {
-    const newVote: VoteResponse = {
-      ...voteData,
-      voteId: Date.now(),
-      participants: 0,
-      status: 'active',
-      createdAt: new Date().toISOString(),
-    };
-    set((state) => ({ votes: [...state.votes, newVote] }));
+  createVote: async (voteData) => {
+    try {
+      // 1. 서버에 요청
+      const createdVote: VoteResponse = await VoteAPI.createVote(voteData);
+
+      // 2. 응답받은 데이터를 상태에 추가
+      set((state) => ({
+        votes: [...state.votes, createdVote],
+      }));
+    } catch (error) {
+      console.error('투표 생성 실패:', error);
+
+      // ✅ 여기에 이거 추가!
+      if (axios.isAxiosError(error)) {
+        console.error('⚠️ 서버 응답 메시지:', error.response?.data);
+      }
+    }
   },
 
   setSelectedVote: (vote) => set({ selectedVote: vote }),

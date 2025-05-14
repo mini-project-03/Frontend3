@@ -1,17 +1,19 @@
 import { useUIStore } from '@/stores/uiStore';
 import { useState } from 'react';
 
-import { Vote } from '@/types/vote';
+import { VoteRequest } from '@/types/vote';
 import VoteFormContent from './VoteFormContent';
 import Modal from '@/components/ui/Modal';
 import ConfirmModal from '@/components/ui/confirmModal';
+import { useVoteStore } from '@/stores/voteStore';
 
-export default function VoteFormModal({ onCreateVote }: { onCreateVote: (newVote: Vote) => void }) {
+export default function VoteFormModal() {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
+  const createVote = useVoteStore((s) => s.createVote);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  const handleFormSubmit = (data: Vote) => {
-    onCreateVote(data);
+  const handleFormSubmit = async (data: VoteRequest) => {
+    await createVote(data);
     closeVoteForm();
     setIsConfirmOpen(true);
   };
