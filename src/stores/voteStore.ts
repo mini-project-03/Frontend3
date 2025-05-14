@@ -8,7 +8,7 @@ interface VoteState {
   votes: VoteResponse[];
   selectedVote: VoteResponse | null;
   participantList: User[] | null;
-  fetchVotes: () => void;
+  fetchVotes: () => Promise<void>;
   createVote: (voteData: VoteRequest) => Promise<void>;
   setSelectedVote: (vote: VoteResponse) => void;
   clearSelectedVote: () => void;
@@ -33,11 +33,12 @@ export const useVoteStore = create<VoteState>((set) => ({
     try {
       // 1. 서버에 요청
       const createdVote: VoteResponse = await VoteAPI.createVote(voteData);
+      // console.log('✅ newVote 응답:', createdVote);
 
-      // 2. 응답받은 데이터를 상태에 추가
-      set((state) => ({
-        votes: [...state.votes, createdVote],
-      }));
+      // // 2. 응답받은 데이터를 상태에 추가
+      // set((state) => ({
+      //   votes: [...state.votes, createdVote],
+      // }));
     } catch (error) {
       console.error('투표 생성 실패:', error);
 

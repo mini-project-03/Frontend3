@@ -150,14 +150,6 @@ export default function VoteFormContent({
           </button>
         </div>
       </Modal>
-
-      {/* ✅ 확인 모달 렌더링 */}
-      <ConfirmModal
-        isOpen={isConfirmOpen}
-        title="투표가 만들어졌어요!"
-        description="같이 갈 팀원을 만나보아요 😊"
-        onClose={() => setIsConfirmOpen(false)}
-      />
     </>
   );
 }
