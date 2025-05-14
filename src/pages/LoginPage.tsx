@@ -2,10 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import AuthForm from '../components/auth/AuthForm';
 import AuthLayout, { AuthType } from '@/components/auth/AuthLayout';
 import { useLoginMutation } from '@/hooks/api/auth/useLoginMutation';
+import { useAuthStore } from '@/stores/authStore';
+import { toast } from 'sonner';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const { mutateAsync: login, isPending } = useLoginMutation();
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const handleLogin = async (formData: Record<string, string>) => {
     try {
@@ -13,8 +16,9 @@ const LoginPage = () => {
         userId: formData.userId,
         userPwd: formData.password,
       });
+      setAccessToken(response['access-token']);
+      toast.success(`${response.userInfo.userName}님 환영합니다!`);
 
-      alert(`${response.userInfo.userName}님 환영합니다!`);
       navigate('/');
     } catch (error: any) {
       console.error('로그인 실패:', error);
