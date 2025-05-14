@@ -1,15 +1,23 @@
 import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
-import { Vote } from '@/types/vote';
+import { VoteResponse } from '@/types/vote';
 import React from 'react';
 
-interface FoodItemProps {
-  vote: Vote;
+// interface VoteItemProps {
+//   title: string;
+//   participants: number;
+//   recruit: number;
+//   id: number;
+//   meetingStartTime: string;
+//   creatorId: string;
+// }
+
+interface VoteItemProps {
+  vote: VoteResponse; // VoteResponse 타입 사용
 }
 
-const FoodItem: React.FC<FoodItemProps> = ({ vote }) => {
-  const { voteId, title, participants, recruit, meetingStartTime, creatorId } = vote;
-
+const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
+  const { voteId, title, participants, recruit, meetingStartTime, creatorId, image } = vote;
   const votePercentage = recruit > 0 ? (participants / recruit) * 100 : 0;
 
   const images = [
@@ -76,4 +84,4 @@ const FoodItem: React.FC<FoodItemProps> = ({ vote }) => {
   );
 };
 
-export default FoodItem;
+export default VoteItem;

@@ -1,36 +1,36 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { FoodAPI } from '@/api/foodAPI';
-import { mockVotes } from '@/data/mockVotes';
-import FoodItem from '@/components/FoodItem';
+import { VoteAPI } from '@/api/voteAPI';
+// import { mockVotes } from '@/data/mockVotes';
+import VoteItem from '@/components/VoteItem';
 import { useUIStore } from '@/stores/uiStore';
 import VoteFormModal from '@/components/vote/VoteFormModal';
 import VoteDetailModal from '@/components/vote/VoteDetailModal';
+import { VoteResponse } from '@/types/vote'; // VoteResponse 타입 사용
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [foods, setFoods] = useState<any[]>([]);
+  const [votes, setVotes] = useState<VoteResponse[]>([]);
 
   const openVoteForm = useUIStore((s) => s.openVoteForm);
 
   // 음식 데이터 가져오기
   useEffect(() => {
-    const fetchFoods = async () => {
+    const fetchVotes = async () => {
       try {
-        // const mockVotes = await FoodAPI.getFoods();
-        setFoods(mockVotes);
+        const response = await VoteAPI.getVotes();
+        setVotes(response);
       } catch (error) {
         console.error('음식 데이터를 가져오는 데 실패:', error);
-        setFoods(mockVotes);
       }
     };
 
-    fetchFoods();
+    fetchVotes();
   }, []);
 
   // 투표 생성 후 데이터를 화면에 반영
   const handleCreateVote = (newVote: any) => {
-    setFoods((prevFoods) => [newVote, ...prevFoods]); // 새로운 투표 추가
+    setVotes((prevVotes) => [newVote, ...prevVotes]); // 새로운 투표 추가
   };
 
   const handleOpenModal = () => {
@@ -40,9 +40,9 @@ const HomePage = () => {
   return (
     <div className="container overflow-hidden mx-auto px-4 py-4 flex gap-6">
       <div className="flex-1 grid gap-4 overflow-y-auto h-[770px] grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
-        {foods.map((vote) => (
+        {votes.map((vote) => (
           <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
-            <FoodItem vote={vote} />
+            <VoteItem vote={vote} />
           </div>
         ))}
       </div>
