@@ -1,16 +1,18 @@
 // import { mockParticipants } from '@/data/mockParticipants';
 import { mockVotes } from '@/data/mockVotes';
 import { User } from '@/types/user';
-import { Vote } from '@/types/vote';
+import { VoteResponse } from '@/types/vote';
 import { create } from 'zustand';
 
 interface VoteState {
-  votes: Vote[];
-  selectedVote: Vote | null;
+  votes: VoteResponse[];
+  selectedVote: VoteResponse | null;
   participantList: User[] | null;
   fetchVotes: () => void;
-  createVote: (vote: Omit<Vote, 'voteId' | 'participants' | 'status' | 'createdAt'>) => void;
-  setSelectedVote: (vote: Vote) => void;
+  createVote: (
+    vote: Omit<VoteResponse, 'voteId' | 'participants' | 'status' | 'createdAt'>,
+  ) => void;
+  setSelectedVote: (vote: VoteResponse) => void;
   clearSelectedVote: () => void;
   participateInVote: (voteId: number, user: User) => void;
 }
@@ -25,7 +27,7 @@ export const useVoteStore = create<VoteState>((set) => ({
   },
 
   createVote: (voteData) => {
-    const newVote: Vote = {
+    const newVote: VoteResponse = {
       ...voteData,
       voteId: Date.now(),
       participants: 0,

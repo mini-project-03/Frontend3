@@ -1,12 +1,13 @@
-import { Vote } from '@/types/vote';
-import { useState, useEffect } from 'react';
-import { validateVoteForm } from '@/utils/validation';
-import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
-import { useUIStore } from '@/stores/uiStore';
+import { useEffect, useState } from 'react';
 import Modal from '@/components/ui/Modal';
 import ConfirmModal from '@/components/ui/confirmModal';
+import { useUIStore } from '@/stores/uiStore';
+import { useVoteStore } from '@/stores/voteStore';
+import { VoteRequest } from '@/types/vote';
+import { validateVoteForm } from '@/utils/validation';
+import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
 
-export default function VoteFormContent({ onSubmit }: { onSubmit: (data: Vote) => void }) {
+export default function VoteFormContent({ onSubmit }: { onSubmit: (data: VoteRequest) => void }) {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -32,7 +33,7 @@ export default function VoteFormContent({ onSubmit }: { onSubmit: (data: Vote) =
       return;
     }
 
-    const voteData: Omit<Vote, 'id'> = {
+    const voteData: Omit<VoteRequest, 'id'> = {
       title,
       description,
       recruit,
