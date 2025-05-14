@@ -4,6 +4,7 @@ import { VoteAPI } from '@/api/voteAPI';
 // import { mockVotes } from '@/data/mockVotes';
 import VoteItem from '@/components/VoteItem';
 import { useUIStore } from '@/stores/uiStore';
+import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
 import VoteFormModal from '@/components/vote/VoteFormModal';
 import VoteDetailModal from '@/components/vote/VoteDetailModal';
 import { VoteResponse } from '@/types/vote'; // VoteResponse 타입 사용
@@ -11,7 +12,7 @@ import { VoteResponse } from '@/types/vote'; // VoteResponse 타입 사용
 const HomePage = () => {
   const navigate = useNavigate();
   const [votes, setVotes] = useState<VoteResponse[]>([]);
-
+  const { requireAuth } = useRequireAuth();
   const openVoteForm = useUIStore((s) => s.openVoteForm);
 
   // 음식 데이터 가져오기
@@ -34,7 +35,7 @@ const HomePage = () => {
   };
 
   const handleOpenModal = () => {
-    openVoteForm();
+      requireAuth(openVoteForm);
   };
 
   return (

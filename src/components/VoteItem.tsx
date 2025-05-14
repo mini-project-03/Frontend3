@@ -1,6 +1,9 @@
 import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
 import { VoteResponse } from '@/types/vote';
+
+import { Vote } from '@/types/vote';
+import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
 import React from 'react';
 
 // interface VoteItemProps {
@@ -43,10 +46,12 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
 
   const setSelectedVote = useVoteStore((s) => s.setSelectedVote);
   const openVoteDetail = useUIStore((s) => s.openVoteDetail);
-
+   const { requireAuth } = useRequireAuth();
   const handleClick = () => {
-    setSelectedVote(vote);
-    openVoteDetail(vote);
+      requireAuth(() => {
+      setSelectedVote(vote);
+      openVoteDetail(vote);
+    });
   };
 
   return (
