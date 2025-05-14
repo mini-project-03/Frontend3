@@ -40,11 +40,17 @@ const HomePage = () => {
   return (
     <div className="container overflow-hidden mx-auto px-4 py-4 flex gap-6">
       <div className="flex-1 grid gap-4 overflow-y-auto h-[770px] grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
-        {votes.map((vote) => (
-          <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
-            <VoteItem vote={vote} />
-          </div>
-        ))}
+        {votes
+          .slice()
+          .sort((a, b) => {
+            if (a.status !== b.status) return a.status === 'closed' ? 1 : -1;
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          })
+          .map((vote) => (
+            <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
+              <VoteItem vote={vote} />
+            </div>
+          ))}
       </div>
       <VoteDetailModal />
 
