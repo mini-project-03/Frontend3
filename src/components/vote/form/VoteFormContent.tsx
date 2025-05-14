@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import Modal from '../ui/Modal';
-import ConfirmModal from '../ui/confirmModal'; // ✅ 추가
+import Modal from '@/components/ui/Modal';
+import ConfirmModal from '@/components/ui/confirmModal';
 import { useUIStore } from '@/stores/uiStore';
-import { useVoteStore } from '@/stores/voteStore';
 import { VoteRequest } from '@/types/vote';
+import { validateVoteForm } from '@/utils/validation';
+import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
+import { useAuthStore } from '@/stores/authStore';
 
-export default function VoteFormModal({
-  onCreateVote,
+export default function VoteFormContent({
+  onSubmit,
+  onReset,
 }: {
-  onCreateVote: (newVote: VoteRequest) => void;
+  onSubmit: (data: VoteRequest) => void;
+  onReset: (resetFn: () => void) => void;
 }) {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
-  const createVote = useVoteStore((s) => s.createVote);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -20,12 +24,7 @@ export default function VoteFormModal({
   const [meetingEndTime, setMeetingEndTime] = useState('');
   const [deadline, setDeadline] = useState('');
 
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // ✅ 모달 상태 추가
-
-  function toDatetimeLocalFormat(date: Date) {
-    const pad = (n: number) => n.toString().padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  }
+  const userInfo = useAuthStore((state) => state.userInfo);
 
   useEffect(() => {
     if (meetingStartTime) {
@@ -44,54 +43,33 @@ export default function VoteFormModal({
     setDeadline('');
   };
 
+  useEffect(() => {
+    onReset(resetForm); // reset 함수 외부로 전달
+  }, []);
+
   const handleCreate = () => {
-    if (!title || !meetingStartTime || !meetingEndTime) {
-      alert('모든 항목을 올바르게 입력해주세요.');
+    const result = validateVoteForm({ title, meetingStartTime, meetingEndTime, recruit });
+    if (!result.valid) {
+      alert(result.message);
       return;
     }
 
-    const now = new Date();
-    const start = new Date(meetingStartTime);
-    const end = new Date(meetingEndTime);
-
-    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-      alert('유효한 날짜를 입력해주세요.');
+    if (!userInfo) {
+      alert('로그인 후 이용해주세요.');
       return;
     }
 
-    if (start < now) {
-      alert('약속 시작 시간은 현재 시각보다 이후여야 합니다.');
-      return;
-    }
-
-    if (start >= end) {
-      alert('시작 시간은 마감 시간보다 앞서야 합니다.');
-      return;
-    }
-
-    if (recruit < 1 || recruit > 30) {
-      alert('모집 인원은 1명 이상 100명 이하로 설정해주세요.');
-      return;
-    }
-
-    const voteData: Omit<VoteRequest, 'id'> = {
+    const voteData: VoteRequest = {
+      creatorId: userInfo.userId,
       title,
       description,
       recruit,
       meetingStartTime,
       meetingEndTime,
       deadline,
-      voteId: 0,
-      creatorId: '김씨', // 실제 사용자 ID로 대체
-      participants: 0,
-      status: 'active',
-      createdAt: new Date().toISOString(),
     };
 
-    onCreateVote(voteData);
-    resetForm();
-    closeVoteForm();
-    setIsConfirmOpen(true); // ✅ 확인 모달 띄우기
+    onSubmit(voteData);
   };
 
   return (
@@ -172,14 +150,6 @@ export default function VoteFormModal({
           </button>
         </div>
       </Modal>
-
-      {/* ✅ 확인 모달 렌더링 */}
-      <ConfirmModal
-        isOpen={isConfirmOpen}
-        title="투표가 만들어졌어요!"
-        description="같이 갈 팀원을 만나보아요 😊"
-        onClose={() => setIsConfirmOpen(false)}
-      />
     </>
   );
 }

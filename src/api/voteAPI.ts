@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/stores/authStore';
 import { apiClient } from './apiClient';
 import { VoteRequest, VoteResponse } from '@/types/vote';
 
@@ -40,7 +41,12 @@ export const VoteAPI = {
   },
 
   createVote: async (voteData: VoteRequest) => {
-    const { data } = await apiClient.post('/votes', voteData);
+    const accessToken = useAuthStore.getState().accessToken;
+    const { data } = await apiClient.post('/votes', voteData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return data;
   },
 

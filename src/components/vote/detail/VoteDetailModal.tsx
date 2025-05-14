@@ -1,8 +1,8 @@
 import { useVoteStore } from '@/stores/voteStore';
-import Modal from '../ui/Modal';
 import { useUIStore } from '@/stores/uiStore';
 import { formatTime } from '@/utils/dateFormatter';
 import ParticipationChart from './ParticipationChart';
+import Modal from '@/components/ui/Modal';
 
 export default function VoteDetailModal() {
   const { selectedVote, participateInVote, clearSelectedVote } = useVoteStore();
