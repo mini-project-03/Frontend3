@@ -9,6 +9,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { mutateAsync: login, isPending } = useLoginMutation();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const setUserInfo = useAuthStore((state) => state.setUserInfo);
 
   const handleLogin = async (formData: Record<string, string>) => {
     try {
@@ -17,6 +18,7 @@ const LoginPage = () => {
         userPwd: formData.password,
       });
       setAccessToken(response['access-token']);
+      setUserInfo(response.userInfo);
       toast.success(`${response.userInfo.userName}님 환영합니다!`);
 
       navigate('/');

@@ -5,8 +5,15 @@ import { useUIStore } from '@/stores/uiStore';
 import { VoteRequest } from '@/types/vote';
 import { validateVoteForm } from '@/utils/validation';
 import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
+import { useAuthStore } from '@/stores/authStore';
 
-export default function VoteFormContent({ onSubmit }: { onSubmit: (data: VoteRequest) => void }) {
+export default function VoteFormContent({
+  onSubmit,
+  onReset,
+}: {
+  onSubmit: (data: VoteRequest) => void;
+  onReset: (resetFn: () => void) => void;
+}) {
   const { isVoteFormOpen, closeVoteForm } = useUIStore();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -17,6 +24,8 @@ export default function VoteFormContent({ onSubmit }: { onSubmit: (data: VoteReq
   const [meetingEndTime, setMeetingEndTime] = useState('');
   const [deadline, setDeadline] = useState('');
 
+  const userInfo = useAuthStore((state) => state.userInfo);
+
   useEffect(() => {
     if (meetingStartTime) {
       const start = new Date(meetingStartTime);
@@ -25,6 +34,19 @@ export default function VoteFormContent({ onSubmit }: { onSubmit: (data: VoteReq
     }
   }, [meetingStartTime]);
 
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setRecruit(4);
+    setMeetingStartTime('');
+    setMeetingEndTime('');
+    setDeadline('');
+  };
+
+  useEffect(() => {
+    onReset(resetForm); // reset 함수 외부로 전달
+  }, []);
+
   const handleCreate = () => {
     const result = validateVoteForm({ title, meetingStartTime, meetingEndTime, recruit });
     if (!result.valid) {
@@ -32,8 +54,13 @@ export default function VoteFormContent({ onSubmit }: { onSubmit: (data: VoteReq
       return;
     }
 
+    if (!userInfo) {
+      alert('로그인 후 이용해주세요.');
+      return;
+    }
+
     const voteData: VoteRequest = {
-      creatorId: '김씨', // 또는 userStore 등에서 가져온 값
+      creatorId: userInfo.userId,
       title,
       description,
       recruit,
@@ -43,16 +70,6 @@ export default function VoteFormContent({ onSubmit }: { onSubmit: (data: VoteReq
     };
 
     onSubmit(voteData);
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setTitle('');
-    setDescription('');
-    setRecruit(4);
-    setMeetingStartTime('');
-    setMeetingEndTime('');
-    setDeadline('');
   };
 
   return (
