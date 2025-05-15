@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthAPI } from '@/api/authAPI';
 import { useAuthStore } from '@/stores/authStore.ts';
+import { toast } from 'sonner';
 
 const LogoutButton = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const LogoutButton = () => {
     } finally {
       clearAccessToken();
       clearUserInfo();
+      toast.success('로그아웃 되었습니다!');
       navigate('/');
     }
   };
