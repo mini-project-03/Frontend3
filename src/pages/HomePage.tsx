@@ -1,16 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { VoteAPI } from '@/api/voteAPI';
+import { useEffect } from 'react';
 import { useVoteStore } from '@/stores/voteStore';
-import VoteItem from '@/components/VoteItem';
+import VoteItem from '@/components/vote/item/VoteItem';
 import { useUIStore } from '@/stores/uiStore';
 import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
 import VoteFormModal from '@/components/vote/form/VoteFormModal';
 import VoteDetailModal from '@/components/vote/detail/VoteDetailModal';
-import { VoteResponse } from '@/types/vote'; // VoteResponse 타입 사용
 
 const HomePage = () => {
-  const navigate = useNavigate();
   const votes = useVoteStore((s) => s.votes);
   const fetchVotes = useVoteStore((s) => s.fetchVotes);
   const { requireAuth } = useRequireAuth();
@@ -27,11 +24,17 @@ const HomePage = () => {
   return (
     <div className="container overflow-hidden mx-auto px-4 py-4 flex gap-6">
       <div className="flex-1 grid gap-4 overflow-y-auto h-[770px] grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
-        {votes.map((vote) => (
-          <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
-            <VoteItem key={vote.voteId} vote={vote} />
-          </div>
-        ))}
+        {votes
+          .slice()
+          .sort((a, b) => {
+            if (a.status !== b.status) return a.status === 'closed' ? 1 : -1;
+            return new Date(a.meetingStartTime).getTime() - new Date(b.meetingStartTime).getTime();
+          })
+          .map((vote) => (
+            <div key={vote.voteId} className="bg-gray-800 p-4 rounded-lg">
+              <VoteItem vote={vote} />
+            </div>
+          ))}
       </div>
       <VoteDetailModal />
 
