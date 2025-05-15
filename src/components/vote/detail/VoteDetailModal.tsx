@@ -12,14 +12,9 @@ export default function VoteDetailModal() {
 
   const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
 
-  const currentUser = {
-    id: 'user123',
-    name: '홍길동',
-  };
-
-  const handleParticipate = () => {
+  const handleParticipate = async () => {
     if (!selectedVote) return;
-    participateInVote(selectedVote.voteId, currentUser); // currentUser는 로그인 유저
+    await participateInVote(selectedVote.voteId);
   };
 
   const handleClose = () => {

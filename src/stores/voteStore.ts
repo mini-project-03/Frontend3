@@ -12,7 +12,7 @@ interface VoteState {
   createVote: (voteData: VoteRequest) => Promise<void>;
   setSelectedVote: (vote: VoteResponse) => void;
   clearSelectedVote: () => void;
-  participateInVote: (voteId: number, user: User) => void;
+  participateInVote: (voteId: number) => Promise<void>;
 }
 
 export const useVoteStore = create<VoteState>((set) => ({
@@ -52,27 +52,34 @@ export const useVoteStore = create<VoteState>((set) => ({
   setSelectedVote: (vote) => set({ selectedVote: vote }),
   clearSelectedVote: () => set({ selectedVote: null }),
 
-  participateInVote: (voteId, user) => {
-    set((state) => {
-      const updatedVotes = state.votes.map((vote) => {
-        if (vote.voteId === voteId) {
-          return {
-            ...vote,
-            participants: vote.participants + 1,
-          };
-        }
-        return vote;
+  participateInVote: async (voteId) => {
+    try {
+      await VoteAPI.participate(voteId);
+
+      // 서버 요청 성공했으면 상태 업데이트
+      set((state) => {
+        const updatedVotes = state.votes.map((vote) => {
+          if (vote.voteId === voteId) {
+            return {
+              ...vote,
+              participants: vote.participants + 1,
+            };
+          }
+          return vote;
+        });
+
+        const updatedSelectedVote =
+          state.selectedVote?.voteId === voteId
+            ? { ...state.selectedVote, participants: state.selectedVote.participants + 1 }
+            : state.selectedVote;
+
+        return {
+          votes: updatedVotes,
+          selectedVote: updatedSelectedVote,
+        };
       });
-
-      const updatedSelectedVote =
-        state.selectedVote?.voteId === voteId
-          ? { ...state.selectedVote, participants: state.selectedVote.participants + 1 }
-          : state.selectedVote;
-
-      return {
-        votes: updatedVotes,
-        selectedVote: updatedSelectedVote,
-      };
-    });
+    } catch (error) {
+      console.error('참여 실패:', error);
+    }
   },
 }));

@@ -50,6 +50,16 @@ export const VoteAPI = {
     return data;
   },
 
+  participate: async (voteId: number) => {
+    const accessToken = useAuthStore.getState().accessToken;
+    const { data } = await apiClient.post(`/votes/${voteId}/participants`, undefined, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return data;
+  },
+
   updateVote: async (voteId: number, voteData: VoteRequest) => {
     const { data } = await apiClient.put(`/votes/${voteId}`, voteData);
     return data;
