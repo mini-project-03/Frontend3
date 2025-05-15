@@ -23,11 +23,10 @@ const LogoutButton = () => {
       navigate('/');
     }
   };
-
   return (
     <button
       onClick={handleLogout}
-      className="bg-pink-600 hover:bg-primary text-white px-4 py-2 rounded  transition"
+      className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded  transition"
     >
       Logout
     </button>
