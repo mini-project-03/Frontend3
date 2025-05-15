@@ -14,21 +14,18 @@ export default function VoteDetailModal() {
     fetchParticipantList,
     participantList,
   } = useVoteStore();
+
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
 
   const currentUserId = useAuthStore.getState().userInfo?.userId;
+  const isLoading = !participantList;
+  const isParticipated = participantList?.some((p) => String(p.name) === String(currentUserId));
 
   useEffect(() => {
     if (selectedVote) {
       fetchParticipantList(selectedVote.voteId);
     }
   }, [selectedVote]);
-
-  const isParticipated = participantList?.some((p) => String(p.name) === String(currentUserId));
-
-  console.log('👤 currentUserId:', currentUserId);
-  console.log('✅ participantList:', participantList);
-  console.log('🎯 isParticipated:', isParticipated);
 
   if (!selectedVote) return null;
 
@@ -92,14 +89,16 @@ export default function VoteDetailModal() {
         <div className="mt-auto flex justify-end">
           <button
             onClick={handleParticipate}
-            disabled={isParticipated}
-            className={`py-2 px-7 rounded-lg font-semibold text-base flex items-center gap-2 transition ${
-              isParticipated
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-primary hover:bg-primary-hover text-white'
+            disabled={isLoading || isParticipated}
+            className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
+              isLoading
+                ? 'bg-gray-300 text-white cursor-wait'
+                : isParticipated
+                  ? 'bg-gray-400 text-white cursor-not-allowed'
+                  : 'bg-primary hover:bg-primary-hover text-white'
             }`}
           >
-            {isParticipated ? '✅ 참여 완료' : '👍 참여'}
+            {isLoading ? '🔄 확인 중...' : isParticipated ? '✅ 참여 완료' : '👍 참여'}
           </button>
         </div>
       </div>

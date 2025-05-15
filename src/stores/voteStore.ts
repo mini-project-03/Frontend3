@@ -44,7 +44,11 @@ export const useVoteStore = create<VoteState>((set) => ({
   },
 
   setSelectedVote: (vote) => set({ selectedVote: vote }),
-  clearSelectedVote: () => set({ selectedVote: null }),
+  clearSelectedVote: () =>
+    set({
+      selectedVote: null,
+      participantList: null,
+    }),
 
   participateInVote: async (voteId) => {
     try {
