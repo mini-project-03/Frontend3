@@ -12,12 +12,16 @@ export const AuthAPI = {
     return data;
   },
 
-  logout: async (accessToken: string) => {
+  logout: async (accessToken: string | null) => {
+    if(!accessToken) {
+      throw new Error('No access token provided for logout');
+    }
     const { data } = await apiClient.get('/users/logout', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
+      withCredentials: true,
     });
     return data;
-  },
+  }
 };
