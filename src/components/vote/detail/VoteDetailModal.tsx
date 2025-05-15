@@ -3,37 +3,83 @@ import { useUIStore } from '@/stores/uiStore';
 import { formatTime } from '@/utils/dateFormatter';
 import ParticipationChart from './ParticipationChart';
 import Modal from '@/components/ui/Modal';
+import VoteOptionsMenu from '../item/VoteOptionsMenu';
+import { useAuthStore } from '@/stores/authStore';
 
 export default function VoteDetailModal() {
-  const { selectedVote, participateInVote, clearSelectedVote } = useVoteStore();
+  const { selectedVote, participateInVote, clearSelectedVote, deleteVote, closeVote } =
+    useVoteStore();
+
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
+  const openVoteForm = useUIStore((s) => s.openVoteForm);
+  const { fetchVotes } = useVoteStore();
+
+  const userInfo = useAuthStore((s) => s.userInfo);
 
   if (!selectedVote) return null;
 
   const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
 
-  const currentUser = {
-    id: 'user123',
-    name: '홍길동',
+  const handleParticipate = () => {
+    if (!selectedVote || !userInfo) return;
+
+    const user = {
+      id: userInfo.userId,
+      name: userInfo.userName,
+    };
+
+    participateInVote(selectedVote.voteId, user);
   };
 
-  const handleParticipate = () => {
-    if (!selectedVote) return;
-    participateInVote(selectedVote.voteId, currentUser); // currentUser는 로그인 유저
-  };
+  const isCreator = userInfo?.userId === selectedVote.creatorId;
 
   const handleClose = () => {
     clearSelectedVote();
     closeVoteDetail();
+    fetchVotes();
+  };
+  const handleEdit = () => {
+    if (!isCreator) {
+      alert('작성자만 수정할 수 있습니다.');
+      return;
+    }
+    openVoteForm(selectedVote);
+  };
+
+  const handleDelete = async () => {
+    if (!isCreator) {
+      alert('작성자만 삭제할 수 있습니다.');
+      return;
+    }
+    await deleteVote(selectedVote.voteId);
+    alert('투표가 성공적으로 삭제되었습니다.');
+
+    await fetchVotes();
+    handleClose();
+  };
+
+  const handleForceClose = async () => {
+    if (!isCreator) {
+      alert('작성자만 마감할 수 있습니다.');
+      return;
+    }
+    await closeVote(selectedVote.voteId);
+    alert('투표가 마감되었습니다.');
+    handleClose();
   };
 
   return (
     <Modal isOpen={!!selectedVote} onClose={handleClose}>
-      <div className="relative p-2 w-[px] text-white rounded-xl">
-        <button
-          onClick={handleClose}
-          className="absolute right-4 top-4 text-gray-400 hover:text-white"
-        ></button>
+      <div className="relative p-4 w-full text-white rounded-xl">
+        <div className="absolute right-4 top-4 flex gap-2 items-center">
+          <VoteOptionsMenu
+            isCreator={isCreator}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onClose={handleForceClose}
+          />
+        </div>
+
         <div className="mb-1">
           <div className="text-2xl font-bold text-white">{selectedVote.title}</div>
           <div className="text-sm text-gray-400 text-right">{selectedVote.creatorId}</div>
