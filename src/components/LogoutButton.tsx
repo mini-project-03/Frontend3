@@ -24,6 +24,7 @@ const LogoutButton = () => {
     }
   };
   return (
+    //로그아웃 버튼
     <button
       onClick={handleLogout}
       className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded  transition"
