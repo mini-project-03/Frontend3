@@ -1,6 +1,8 @@
 import { useAuthStore } from '@/stores/authStore';
 import { apiClient } from './apiClient';
 import { VoteRequest, VoteResponse } from '@/types/vote';
+
+import axios from 'axios';
 import { Participant } from '@/types/participant';
 
 export const VoteAPI = {
@@ -32,7 +34,42 @@ export const VoteAPI = {
   },
 
   updateVote: async (voteId: number, voteData: VoteRequest) => {
-    const { data } = await apiClient.put(`/votes/${voteId}`, voteData);
+    const accessToken = useAuthStore.getState().accessToken;
+
+    try {
+      const { data } = await apiClient.put(`/votes/${voteId}`, voteData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  deleteVote: async (voteId: number) => {
+    const accessToken = useAuthStore.getState().accessToken;
+    try {
+      const res = await apiClient.delete(`/votes/${voteId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  closeVote: async (voteId: number) => {
+    const accessToken = useAuthStore.getState().accessToken;
+    const { data } = await apiClient.patch(`/votes/${voteId}/close`, null, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return data;
   },
 

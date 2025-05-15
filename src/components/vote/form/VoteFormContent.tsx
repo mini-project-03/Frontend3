@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import Modal from '@/components/ui/Modal';
-import ConfirmModal from '@/components/ui/confirmModal';
 import { useUIStore } from '@/stores/uiStore';
 import { VoteRequest } from '@/types/vote';
 import { validateVoteForm } from '@/utils/validation';
@@ -14,9 +13,8 @@ export default function VoteFormContent({
   onSubmit: (data: VoteRequest) => void;
   onReset: (resetFn: () => void) => void;
 }) {
-  const { isVoteFormOpen, closeVoteForm } = useUIStore();
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-
+  const { isVoteFormOpen, closeVoteForm, voteFormMode, voteToEdit } = useUIStore();
+  const isEdit = voteFormMode === 'edit';
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [recruit, setRecruit] = useState(4);
@@ -33,6 +31,17 @@ export default function VoteFormContent({
       setDeadline(toDatetimeLocalFormat(tenMinutesBefore));
     }
   }, [meetingStartTime]);
+
+  useEffect(() => {
+    if (isEdit && voteToEdit) {
+      setTitle(voteToEdit.title);
+      setDescription(voteToEdit.description);
+      setRecruit(voteToEdit.recruit);
+      setMeetingStartTime(voteToEdit.meetingStartTime);
+      setMeetingEndTime(voteToEdit.meetingEndTime);
+      setDeadline(voteToEdit.deadline);
+    }
+  }, [isEdit, voteToEdit]);
 
   const resetForm = () => {
     setTitle('');
@@ -51,6 +60,7 @@ export default function VoteFormContent({
     const result = validateVoteForm({ title, meetingStartTime, meetingEndTime, recruit });
     if (!result.valid) {
       alert(result.message);
+
       return;
     }
 
@@ -67,6 +77,10 @@ export default function VoteFormContent({
       meetingStartTime,
       meetingEndTime,
       deadline,
+      voteId: 0,
+      participants: 0,
+      status: 'active',
+      createdAt: '',
     };
 
     onSubmit(voteData);
@@ -146,7 +160,15 @@ export default function VoteFormContent({
             onClick={handleCreate}
             className="bg-primary hover:bg-primary-hover text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap"
           >
-            <span>➕</span>투표 생성
+            {isEdit ? (
+              <>
+                <span>✏️</span>수정 완료
+              </>
+            ) : (
+              <>
+                <span>➕</span>투표 생성
+              </>
+            )}
           </button>
         </div>
       </Modal>

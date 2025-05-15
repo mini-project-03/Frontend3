@@ -4,17 +4,8 @@ import { VoteResponse } from '@/types/vote';
 import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
 import React from 'react';
 
-// interface VoteItemProps {
-//   title: string;
-//   participants: number;
-//   recruit: number;
-//   id: number;
-//   meetingStartTime: string;
-//   creatorId: string;
-// }
-
 interface VoteItemProps {
-  vote: VoteResponse; // VoteResponse 타입 사용
+  vote: VoteResponse;
 }
 
 const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
@@ -50,7 +41,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   const handleClick = () => {
     requireAuth(() => {
       setSelectedVote(vote);
-      openVoteDetail();
+      openVoteDetail(vote);
       fetchParticipantList(vote.voteId);
     });
   };

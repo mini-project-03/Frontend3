@@ -3,6 +3,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { formatTime } from '@/utils/dateFormatter';
 import ParticipationChart from './ParticipationChart';
 import Modal from '@/components/ui/Modal';
+import VoteOptionsMenu from '../item/VoteOptionsMenu';
 import { useAuthStore } from '@/stores/authStore';
 import { useEffect, useState } from 'react';
 import ConfirmModal from '@/components/ui/confirmModal';
@@ -11,19 +12,22 @@ export default function VoteDetailModal() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const {
     selectedVote,
+    fetchVotes,
+    deleteVote,
+    closeVote,
     participateInVote,
     clearSelectedVote,
     fetchParticipantList,
     participantList,
     cancelParticipationInVote,
   } = useVoteStore();
-
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
-
+  const openVoteForm = useUIStore((s) => s.openVoteForm);
   const currentUserId = useAuthStore.getState().userInfo?.userId;
   const isLoading = !participantList;
   const isParticipated = participantList?.some((p) => String(p.id) === String(currentUserId));
   const [isLoginRequiredOpen, setIsLoginRequiredOpen] = useState(false);
+  const userInfo = useAuthStore((s) => s.userInfo);
 
   useEffect(() => {
     if (selectedVote) {
@@ -36,32 +40,66 @@ export default function VoteDetailModal() {
   const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
 
   const handleParticipate = async () => {
-    if (!selectedVote) return;
-    console.log('currentUserId:', currentUserId);
-    console.log('typeof currentUserId:', typeof currentUserId);
+    if (!selectedVote || !userInfo) return;
 
-    // if (!currentUserId) {
-    //   setIsLoginRequiredOpen(true);
-    //   return;
-    // }
-
-    await participateInVote(selectedVote.voteId);
+    const user = {
+      id: userInfo.userId,
+      name: userInfo.userName,
+    };
+    participateInVote(selectedVote.voteId);
     setIsConfirmOpen(true);
     await fetchParticipantList(selectedVote.voteId);
   };
 
+  const isCreator = userInfo?.userId === selectedVote.creatorId;
+
   const handleClose = () => {
     clearSelectedVote();
     closeVoteDetail();
+    fetchVotes();
+  };
+  const handleEdit = () => {
+    if (!isCreator) {
+      alert('작성자만 수정할 수 있습니다.');
+      return;
+    }
+    openVoteForm(selectedVote);
+  };
+
+  const handleDelete = async () => {
+    if (!isCreator) {
+      alert('작성자만 삭제할 수 있습니다.');
+      return;
+    }
+    await deleteVote(selectedVote.voteId);
+    alert('투표가 성공적으로 삭제되었습니다.');
+
+    await fetchVotes();
+    handleClose();
+  };
+
+  const handleForceClose = async () => {
+    if (!isCreator) {
+      alert('작성자만 마감할 수 있습니다.');
+      return;
+    }
+    await closeVote(selectedVote.voteId);
+    alert('투표가 마감되었습니다.');
+    handleClose();
   };
 
   return (
     <Modal isOpen={!!selectedVote} onClose={handleClose}>
-      <div className="relative p-2 w-[px] text-white rounded-xl">
-        <button
-          onClick={handleClose}
-          className="absolute right-4 top-4 text-gray-400 hover:text-white"
-        ></button>
+      <div className="relative p-4 w-full text-white rounded-xl">
+        <div className="absolute right-4 top-4 flex gap-2 items-center">
+          <VoteOptionsMenu
+            isCreator={isCreator}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onClose={handleForceClose}
+          />
+        </div>
+
         <div className="mb-1">
           <div className="text-2xl font-bold text-white">{selectedVote.title}</div>
           <div className="text-sm text-gray-400 text-right">{selectedVote.creatorId}</div>
