@@ -16,14 +16,14 @@ export default function VoteFormModal() {
 
   const handleFormSubmit = async (data: VoteRequest) => {
     await createVote(data); // 1. 투표 생성
-    await fetchVotes();
-    closeVoteForm(); // 2. 폼 모달 닫기
-    setIsConfirmOpen(true); // 3. 확인 모달 열기
+    await fetchVotes(); // 2. 투표 목록 fetch
+    closeVoteForm(); // 3. 폼 모달 닫기
+    setIsConfirmOpen(true); // 4. 확인 모달 열기
   };
 
   const handleConfirmClose = () => {
-    setIsConfirmOpen(false); // 4. 확인 모달 닫기
-    resetRef.current(); // 5. 폼 reset
+    setIsConfirmOpen(false); // 5. 확인 모달 닫기
+    resetRef.current(); // 6. 폼 reset
   };
 
   return (
@@ -44,7 +44,4 @@ export default function VoteFormModal() {
       />
     </>
   );
-}
-function fetchVotes() {
-  throw new Error('Function not implemented.');
 }

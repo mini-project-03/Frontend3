@@ -2,26 +2,6 @@ import { useAuthStore } from '@/stores/authStore';
 import { apiClient } from './apiClient';
 import { VoteRequest, VoteResponse } from '@/types/vote';
 
-// export interface Vote {
-//   voteId: number;
-//   creatorId: string;
-//   title: string;
-//   description: string;
-//   deadline: string;
-//   meetingStartTime: string;
-//   meetingEndTime: string;
-//   recruit: number;
-//   participants: number;
-//   status: string;
-//   createdAt: string;
-//   restaurantName: string;
-//   latitude: number;
-//   longitude: number;
-//   image: string;
-//   votes: number;
-//   totalVotes: number;
-// }
-
 export const VoteAPI = {
   getVotes: async () => {
     const { data } = await apiClient.get<VoteResponse[]>('/votes');
