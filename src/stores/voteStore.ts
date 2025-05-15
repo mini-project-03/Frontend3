@@ -14,6 +14,7 @@ interface VoteState {
   clearSelectedVote: () => void;
   participateInVote: (voteId: number) => Promise<void>;
   fetchParticipantList: (voteId: number) => Promise<void>;
+  cancelParticipationInVote: (voteId: number) => Promise<void>;
 }
 
 export const useVoteStore = create<VoteState>((set) => ({
@@ -36,7 +37,6 @@ export const useVoteStore = create<VoteState>((set) => ({
     } catch (error) {
       console.error('투표 생성 실패:', error);
 
-      // ✅ 여기에 이거 추가!
       if (axios.isAxiosError(error)) {
         console.error('⚠️ 서버 응답 메시지:', error.response?.data);
       }
@@ -54,7 +54,6 @@ export const useVoteStore = create<VoteState>((set) => ({
     try {
       await VoteAPI.participate(voteId);
 
-      // 서버 요청 성공했으면 상태 업데이트
       set((state) => {
         const updatedVotes = state.votes.map((vote) => {
           if (vote.voteId === voteId) {
@@ -94,7 +93,6 @@ export const useVoteStore = create<VoteState>((set) => ({
     try {
       await VoteAPI.cancelParticipation(voteId);
 
-      // 상태 업데이트: 참여자 수 -1 처리
       set((state) => {
         const updatedVotes = state.votes.map((vote) =>
           vote.voteId === voteId ? { ...vote, participants: vote.participants - 1 } : vote,

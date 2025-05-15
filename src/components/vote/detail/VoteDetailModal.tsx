@@ -4,9 +4,11 @@ import { formatTime } from '@/utils/dateFormatter';
 import ParticipationChart from './ParticipationChart';
 import Modal from '@/components/ui/Modal';
 import { useAuthStore } from '@/stores/authStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import ConfirmModal from '@/components/ui/confirmModal';
 
 export default function VoteDetailModal() {
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const {
     selectedVote,
     participateInVote,
@@ -21,6 +23,7 @@ export default function VoteDetailModal() {
   const currentUserId = useAuthStore.getState().userInfo?.userId;
   const isLoading = !participantList;
   const isParticipated = participantList?.some((p) => String(p.id) === String(currentUserId));
+  const [isLoginRequiredOpen, setIsLoginRequiredOpen] = useState(false);
 
   useEffect(() => {
     if (selectedVote) {
@@ -34,7 +37,16 @@ export default function VoteDetailModal() {
 
   const handleParticipate = async () => {
     if (!selectedVote) return;
+    console.log('currentUserId:', currentUserId);
+    console.log('typeof currentUserId:', typeof currentUserId);
+
+    // if (!currentUserId) {
+    //   setIsLoginRequiredOpen(true);
+    //   return;
+    // }
+
     await participateInVote(selectedVote.voteId);
+    setIsConfirmOpen(true);
     await fetchParticipantList(selectedVote.voteId);
   };
 
@@ -114,6 +126,18 @@ export default function VoteDetailModal() {
           </button>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="참여가 완료되었어요!"
+        description="약속된 시간에 만나요 😊"
+        onClose={() => setIsConfirmOpen(false)}
+      />
+      <ConfirmModal
+        isOpen={isLoginRequiredOpen}
+        title="로그인을 해야 볼 수 있어요!"
+        description="로그인 후 서비스를 이용해주세요. 😊"
+        onClose={() => setIsLoginRequiredOpen(false)}
+      />
     </Modal>
   );
 }
