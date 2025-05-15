@@ -8,13 +8,14 @@ interface VoteBase {
   recruit: number;
 }
 
-export interface VoteRequest extends VoteBase {}
-
-export interface VoteResponse extends VoteBase {
+export interface VoteRequest extends VoteBase {
   voteId: number;
   participants: number;
   status: 'active' | 'closed';
   createdAt: string;
+}
+
+export interface VoteResponse extends VoteRequest {
   image: string;
   votes: number;
   totalVotes: number;

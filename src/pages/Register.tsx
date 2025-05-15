@@ -5,9 +5,12 @@ import { FaFacebookF, FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
 
 import image1 from '/public/image 1.png';
 import image2 from '/public/register.png';
+import ConfirmModal from '@/components/ui/confirmModal.tsx';
 
 const Register = () => {
   const navigate = useNavigate();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false); // 모달 상태 추가
+
 
   // 상태 관리
   const [formData, setFormData] = useState({
@@ -51,7 +54,7 @@ const Register = () => {
     console.log('회원가입 정보:', formData);
 
     // 회원가입 후 로그인 페이지로 이동
-    navigate('/');
+    setIsConfirmOpen(true);
   };
 
   return (
@@ -123,6 +126,16 @@ const Register = () => {
             <FaTelegramPlane className="cursor-pointer hover:text-sky-400" />
           </div>
         </div>
+        {/* confirmModal */}
+        <ConfirmModal
+          isOpen={isConfirmOpen}
+          title="회원가입이 완료되었습니다!"
+          description="Momuk에 오신 것을 환영합니다!🎉"
+          onClose={() => {
+            setIsConfirmOpen(false);
+            navigate('/');
+          }}
+        />
       </div>
     </div>
   );
