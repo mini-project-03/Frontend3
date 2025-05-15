@@ -50,7 +50,10 @@ export const VoteAPI = {
       },
     });
 
-    return data.participants;
+    return data.map((d: any) => ({
+      id: d.userId,
+      name: d.userName,
+    }));
   },
 
   updateVote: async (voteId: number, voteData: VoteRequest) => {

@@ -19,7 +19,7 @@ export default function VoteDetailModal() {
 
   const currentUserId = useAuthStore.getState().userInfo?.userId;
   const isLoading = !participantList;
-  const isParticipated = participantList?.some((p) => String(p.name) === String(currentUserId));
+  const isParticipated = participantList?.some((p) => String(p.id) === String(currentUserId));
 
   useEffect(() => {
     if (selectedVote) {
@@ -34,7 +34,7 @@ export default function VoteDetailModal() {
   const handleParticipate = async () => {
     if (!selectedVote) return;
     await participateInVote(selectedVote.voteId);
-    await fetchParticipantList(selectedVote.voteId); // ✅ 참여 후에도 목록 다시 불러오기
+    await fetchParticipantList(selectedVote.voteId);
   };
 
   const handleClose = () => {
@@ -80,9 +80,18 @@ export default function VoteDetailModal() {
         </div>
 
         <div className="mt-4">
-          <div className="text-sm text-white flex flex-col items-start gap-1">
+          <div className="text-sm text-white flex flex-col items-start gap-1 relative group w-fit">
             <img src="/participants.png" alt="Participants" className="w-11 h-8" />
-            <p>참여자</p>
+
+            <p className="cursor-default">참여자</p>
+
+            <div className="absolute left-full top-0 ml-3 hidden group-hover:block z-10 bg-white text-gray-800 text-sm rounded-md p-2 shadow-lg whitespace-nowrap border border-gray-200">
+              {participantList && participantList.length > 0 ? (
+                participantList.map((p, i) => <div key={i}>{p.name}</div>)
+              ) : (
+                <div>참여자 없음</div>
+              )}
+            </div>
           </div>
         </div>
 
