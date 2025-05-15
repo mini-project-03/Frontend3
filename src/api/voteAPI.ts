@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/stores/authStore';
 import { apiClient } from './apiClient';
 import { VoteRequest, VoteResponse } from '@/types/vote';
+import { Participant } from '@/types/participant';
 
 export const VoteAPI = {
   getVotes: async () => {
@@ -38,6 +39,18 @@ export const VoteAPI = {
       },
     });
     return data;
+  },
+
+  getParticipantList: async (voteId: number): Promise<Participant[]> => {
+    const accessToken = useAuthStore.getState().accessToken;
+
+    const { data } = await apiClient.get(`/votes/${voteId}/participantList`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return data.participants;
   },
 
   updateVote: async (voteId: number, voteData: VoteRequest) => {

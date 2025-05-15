@@ -1,5 +1,5 @@
 import { VoteAPI } from '@/api/voteAPI';
-import { User } from '@/types/user';
+import { Participant } from '@/types/participant';
 import { VoteRequest, VoteResponse } from '@/types/vote';
 import axios from 'axios';
 import { create } from 'zustand';
@@ -7,12 +7,13 @@ import { create } from 'zustand';
 interface VoteState {
   votes: VoteResponse[];
   selectedVote: VoteResponse | null;
-  participantList: User[] | null;
+  participantList: Participant[] | null;
   fetchVotes: () => Promise<void>;
   createVote: (voteData: VoteRequest) => Promise<void>;
   setSelectedVote: (vote: VoteResponse) => void;
   clearSelectedVote: () => void;
   participateInVote: (voteId: number) => Promise<void>;
+  fetchParticipantList: (voteId: number) => Promise<void>;
 }
 
 export const useVoteStore = create<VoteState>((set) => ({
@@ -73,6 +74,15 @@ export const useVoteStore = create<VoteState>((set) => ({
       });
     } catch (error) {
       console.error('참여 실패:', error);
+    }
+  },
+
+  fetchParticipantList: async (voteId: number) => {
+    try {
+      const list = await VoteAPI.getParticipantList(voteId);
+      set({ participantList: list });
+    } catch (error) {
+      console.error('참여자 목록 불러오기 실패:', error);
     }
   },
 }));

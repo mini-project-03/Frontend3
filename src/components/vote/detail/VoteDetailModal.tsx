@@ -3,10 +3,32 @@ import { useUIStore } from '@/stores/uiStore';
 import { formatTime } from '@/utils/dateFormatter';
 import ParticipationChart from './ParticipationChart';
 import Modal from '@/components/ui/Modal';
+import { useAuthStore } from '@/stores/authStore';
+import { useEffect } from 'react';
 
 export default function VoteDetailModal() {
-  const { selectedVote, participateInVote, clearSelectedVote } = useVoteStore();
+  const {
+    selectedVote,
+    participateInVote,
+    clearSelectedVote,
+    fetchParticipantList,
+    participantList,
+  } = useVoteStore();
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
+
+  const currentUserId = useAuthStore.getState().userInfo?.userId;
+
+  useEffect(() => {
+    if (selectedVote) {
+      fetchParticipantList(selectedVote.voteId);
+    }
+  }, [selectedVote]);
+
+  const isParticipated = participantList?.some((p) => String(p.name) === String(currentUserId));
+
+  console.log('👤 currentUserId:', currentUserId);
+  console.log('✅ participantList:', participantList);
+  console.log('🎯 isParticipated:', isParticipated);
 
   if (!selectedVote) return null;
 
@@ -15,6 +37,7 @@ export default function VoteDetailModal() {
   const handleParticipate = async () => {
     if (!selectedVote) return;
     await participateInVote(selectedVote.voteId);
+    await fetchParticipantList(selectedVote.voteId); // ✅ 참여 후에도 목록 다시 불러오기
   };
 
   const handleClose = () => {
@@ -69,9 +92,14 @@ export default function VoteDetailModal() {
         <div className="mt-auto flex justify-end">
           <button
             onClick={handleParticipate}
-            className="bg-primary hover:bg-primary-hover transition text-white py-2 px-7 rounded-lg font-semibold text-base flex items-center gap-2"
+            disabled={isParticipated}
+            className={`py-2 px-7 rounded-lg font-semibold text-base flex items-center gap-2 transition ${
+              isParticipated
+                ? 'bg-gray-400 text-white cursor-not-allowed'
+                : 'bg-primary hover:bg-primary-hover text-white'
+            }`}
           >
-            👍 참여
+            {isParticipated ? '✅ 참여 완료' : '👍 참여'}
           </button>
         </div>
       </div>
