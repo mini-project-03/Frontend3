@@ -13,6 +13,7 @@ export default function VoteDetailModal() {
     clearSelectedVote,
     fetchParticipantList,
     participantList,
+    cancelParticipationInVote,
   } = useVoteStore();
 
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
@@ -97,17 +98,19 @@ export default function VoteDetailModal() {
 
         <div className="mt-auto flex justify-end">
           <button
-            onClick={handleParticipate}
-            disabled={isLoading || isParticipated}
+            onClick={
+              isParticipated
+                ? () => cancelParticipationInVote(selectedVote.voteId)
+                : handleParticipate
+            }
+            disabled={isLoading}
             className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
               isLoading
                 ? 'bg-gray-300 text-white cursor-wait'
-                : isParticipated
-                  ? 'bg-gray-400 text-white cursor-not-allowed'
-                  : 'bg-primary hover:bg-primary-hover text-white'
+                : 'bg-primary hover:bg-primary-hover text-white'
             }`}
           >
-            {isLoading ? '🔄 확인 중...' : isParticipated ? '✅ 참여 완료' : '👍 참여'}
+            {isLoading ? '🔄 확인 중...' : isParticipated ? '❌ 참여 취소' : '👍 참여'}
           </button>
         </div>
       </div>

@@ -89,4 +89,29 @@ export const useVoteStore = create<VoteState>((set) => ({
       console.error('참여자 목록 불러오기 실패:', error);
     }
   },
+
+  cancelParticipationInVote: async (voteId: number) => {
+    try {
+      await VoteAPI.cancelParticipation(voteId);
+
+      // 상태 업데이트: 참여자 수 -1 처리
+      set((state) => {
+        const updatedVotes = state.votes.map((vote) =>
+          vote.voteId === voteId ? { ...vote, participants: vote.participants - 1 } : vote,
+        );
+
+        const updatedSelectedVote =
+          state.selectedVote?.voteId === voteId
+            ? { ...state.selectedVote, participants: state.selectedVote.participants - 1 }
+            : state.selectedVote;
+
+        return {
+          votes: updatedVotes,
+          selectedVote: updatedSelectedVote,
+        };
+      });
+    } catch (error) {
+      console.error('참여 취소 실패:', error);
+    }
+  },
 }));
