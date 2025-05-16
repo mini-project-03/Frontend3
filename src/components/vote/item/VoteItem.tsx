@@ -22,6 +22,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   const setSelectedVote = useVoteStore((s) => s.setSelectedVote);
   const deleteVote = useVoteStore((s) => s.deleteVote);
   const openVoteDetail = useUIStore((s) => s.openVoteDetail);
+  const fetchParticipantList = useVoteStore((s) => s.fetchParticipantList);
 
   const { requireAuth } = useRequireAuth();
 
@@ -30,6 +31,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
     requireAuth(() => {
       setSelectedVote(vote);
       openVoteDetail(vote);
+      fetchParticipantList(vote.voteId);
     });
   };
 

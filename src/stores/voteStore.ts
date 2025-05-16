@@ -1,5 +1,5 @@
 import { VoteAPI } from '@/api/voteAPI';
-import { User } from '@/types/user';
+import { Participant } from '@/types/participant';
 import { VoteRequest, VoteResponse } from '@/types/vote';
 import axios from 'axios';
 import { create } from 'zustand';
@@ -8,13 +8,15 @@ import { sortVotes } from '@/utils/sortVotes';
 interface VoteState {
   votes: VoteResponse[];
   selectedVote: VoteResponse | null;
-  participantList: User[] | null;
+  participantList: Participant[] | null;
   fetchVotes: () => Promise<void>;
   createVote: (voteData: VoteRequest) => Promise<void>;
   updateVote: (voteId: number, voteData: VoteRequest) => Promise<void>;
   setSelectedVote: (vote: VoteResponse) => void;
   clearSelectedVote: () => void;
-  participateInVote: (voteId: number, user: User) => void;
+  participateInVote: (voteId: number) => Promise<void>;
+  fetchParticipantList: (voteId: number) => Promise<void>;
+  cancelParticipationInVote: (voteId: number) => Promise<void>;
   deleteVote: (voteId: number) => void;
   closeVote: (voteId: number) => Promise<void>;
 }
@@ -34,24 +36,73 @@ export const useVoteStore = create<VoteState>((set) => ({
   },
 
   setSelectedVote: (vote) => set({ selectedVote: vote }),
-  clearSelectedVote: () => set({ selectedVote: null }),
+  clearSelectedVote: () =>
+    set({
+      selectedVote: null,
+      participantList: null,
+    }),
 
-  participateInVote: (voteId, user) => {
-    set((state) => {
-      const updatedVotes = state.votes.map((vote) =>
-        vote.voteId === voteId ? { ...vote, participants: vote.participants + 1 } : vote,
-      );
+  participateInVote: async (voteId) => {
+    try {
+      await VoteAPI.participate(voteId);
 
-      const updatedSelectedVote =
-        state.selectedVote?.voteId === voteId
-          ? { ...state.selectedVote, participants: state.selectedVote.participants + 1 }
-          : state.selectedVote;
+      set((state) => {
+        const updatedVotes = state.votes.map((vote) => {
+          if (vote.voteId === voteId) {
+            return {
+              ...vote,
+              participants: vote.participants + 1,
+            };
+          }
+          return vote;
+        });
 
-      return {
-        votes: sortVotes(updatedVotes),
-        selectedVote: updatedSelectedVote,
-      };
-    });
+        const updatedSelectedVote =
+          state.selectedVote?.voteId === voteId
+            ? { ...state.selectedVote, participants: state.selectedVote.participants + 1 }
+            : state.selectedVote;
+
+        return {
+          votes: sortVotes(updatedVotes),
+          selectedVote: updatedSelectedVote,
+        };
+      });
+    } catch (error) {
+      console.error('참여 실패:', error);
+    }
+  },
+
+  fetchParticipantList: async (voteId: number) => {
+    try {
+      const list = await VoteAPI.getParticipantList(voteId);
+      set({ participantList: list });
+    } catch (error) {
+      console.error('참여자 목록 불러오기 실패:', error);
+    }
+  },
+
+  cancelParticipationInVote: async (voteId: number) => {
+    try {
+      await VoteAPI.cancelParticipation(voteId);
+
+      set((state) => {
+        const updatedVotes = state.votes.map((vote) =>
+          vote.voteId === voteId ? { ...vote, participants: vote.participants - 1 } : vote,
+        );
+
+        const updatedSelectedVote =
+          state.selectedVote?.voteId === voteId
+            ? { ...state.selectedVote, participants: state.selectedVote.participants - 1 }
+            : state.selectedVote;
+
+        return {
+          votes: updatedVotes,
+          selectedVote: updatedSelectedVote,
+        };
+      });
+    } catch (error) {
+      console.error('참여 취소 실패:', error);
+    }
   },
 
   createVote: async (voteData) => {
