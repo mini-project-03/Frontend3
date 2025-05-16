@@ -13,6 +13,7 @@ const HomePage = () => {
   const fetchVotes = useVoteStore((s) => s.fetchVotes);
   const { requireAuth } = useRequireAuth();
   const openVoteForm = useUIStore((s) => s.openVoteForm);
+  const selectedVote = useVoteStore((s) => s.selectedVote);
 
   useEffect(() => {
     fetchVotes(); // 서버에서 투표 목록 불러오기
@@ -37,7 +38,7 @@ const HomePage = () => {
             </div>
           ))}
       </div>
-      <VoteDetailModal />
+      {selectedVote && <VoteDetailModal />}
 
       <div className="w-1/4 bg-item-background h-[770px] rounded-lg p-4 flex flex-col justify-between items-center">
         {/* 룰렛 들어갈 자리 */}
