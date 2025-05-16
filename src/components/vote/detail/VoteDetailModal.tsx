@@ -35,6 +35,7 @@ export default function VoteDetailModal() {
   const isFull = selectedVote!.participants >= selectedVote!.recruit;
 
   const isLoading = !participantList;
+  const isButtonDisabled = isLoading || (!localIsParticipated && isFull);
   const isCreator = userInfo?.userId === selectedVote.creatorId;
 
   useEffect(() => {
@@ -59,12 +60,6 @@ export default function VoteDetailModal() {
       await participateInVote(selectedVote.voteId);
       setIsConfirmOpen(true);
       await fetchParticipantList(selectedVote.voteId);
-
-      const updatedParticipants = selectedVote.participants + 1;
-      if (updatedParticipants >= selectedVote.recruit) {
-        await closeVote(selectedVote.voteId);
-        alert('모집이 완료되어 투표가 마감되었습니다.');
-      }
     } catch (error) {
       console.error('참여 실패:', error);
       alert('참여에 실패했습니다. 다시 시도해주세요.');
@@ -181,7 +176,7 @@ export default function VoteDetailModal() {
         <div className="mt-auto flex justify-end">
           <button
             onClick={localIsParticipated ? handleCancelParticipation : handleParticipate}
-            disabled={isLoading || isFull}
+            disabled={isButtonDisabled}
             className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
               isLoading
                 ? 'bg-gray-300 text-white cursor-wait'
@@ -190,10 +185,10 @@ export default function VoteDetailModal() {
           >
             {isLoading
               ? '🔄 확인 중...'
-              : isFull
-                ? '🚫 모집 완료'
-                : localIsParticipated
-                  ? '❌ 참여 취소'
+              : localIsParticipated
+                ? '❌ 참여 취소'
+                : isFull
+                  ? '🚫 모집 완료'
                   : '👍 참여'}
           </button>
         </div>
