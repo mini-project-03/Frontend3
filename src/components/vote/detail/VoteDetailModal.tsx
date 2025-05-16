@@ -11,7 +11,6 @@ import ConfirmModal from '@/components/ui/confirmModal';
 export default function VoteDetailModal() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [localIsParticipated, setLocalIsParticipated] = useState(false);
-  const [isLoginRequiredOpen, setIsLoginRequiredOpen] = useState(false);
   const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
 
   const {
@@ -201,12 +200,6 @@ export default function VoteDetailModal() {
         title="참여가 완료되었어요!"
         description="약속된 시간에 만나요 😊"
         onClose={() => setIsConfirmOpen(false)}
-      />
-      <ConfirmModal
-        isOpen={isLoginRequiredOpen}
-        title="로그인을 해야 볼 수 있어요!"
-        description="로그인 후 서비스를 이용해주세요. 😊"
-        onClose={() => setIsLoginRequiredOpen(false)}
       />
       <ConfirmModal
         isOpen={isCancelConfirmOpen}
