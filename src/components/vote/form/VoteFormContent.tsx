@@ -5,11 +5,12 @@ import { VoteRequest } from '@/types/vote';
 import { validateVoteForm } from '@/utils/validation';
 import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
 import { useAuthStore } from '@/stores/authStore';
+import { motion } from 'framer-motion'; // ✅ 애니메이션 추가
 
 export default function VoteFormContent({
-  onSubmit,
-  onReset,
-}: {
+                                          onSubmit,
+                                          onReset,
+                                        }: {
   onSubmit: (data: VoteRequest) => void;
   onReset: (resetFn: () => void) => void;
 }) {
@@ -53,14 +54,13 @@ export default function VoteFormContent({
   };
 
   useEffect(() => {
-    onReset(resetForm); // reset 함수 외부로 전달
+    onReset(resetForm);
   }, []);
 
   const handleCreate = () => {
     const result = validateVoteForm({ title, meetingStartTime, meetingEndTime, recruit });
     if (!result.valid) {
       alert(result.message);
-
       return;
     }
 
@@ -87,91 +87,84 @@ export default function VoteFormContent({
   };
 
   return (
-    <>
-      <Modal isOpen={isVoteFormOpen} onClose={closeVoteForm}>
-        <div className="flex items-center gap-4 mb-4">
-          <h2 className="text-white text-xl font-bold whitespace-nowrap">투표 제목</h2>
+    <Modal isOpen={isVoteFormOpen} onClose={closeVoteForm}>
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        className="w-full max-w-lg bg-zinc-900 p-6 rounded-xl shadow-xl text-gray-200 space-y-4"
+      >
+        <div>
+          <label className="block text-sm font-semibold mb-1">투표 제목</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="투표 제목을 입력하세요"
-            className="w-80 p-2.5 rounded border border-gray-400 bg-transparent text-white"
+            className="w-full px-3 py-2 rounded-md bg-zinc-800 border border-zinc-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition"
           />
         </div>
 
-        <div className="text-sm items-baseline text-white mt-4 mb-2 flex gap-1">
-          <span className="text-2xl">👤</span>
-          <span className="text-base mr-3">모집자</span>
-          <span className="text-gray-400">여기는 사용자 이름</span>
+        <div className="flex items-center text-sm gap-2">
+          <span className="text-xl">👤</span>
+          <span className="text-base">모집자</span>
+          <span className="text-gray-400">{userInfo?.nickname ?? '여기는 사용자 이름'}</span>
         </div>
 
-        <div className="flex items-center gap-4 mt-3">
-          <label className="text-white whitespace-nowrap">약속 시작 시간</label>
+        <div className="grid grid-cols-[140px_1fr] items-center gap-2">
+          <label className="text-sm">약속 시작 시간</label>
           <input
             type="datetime-local"
             value={meetingStartTime}
             onChange={(e) => setMeetingStartTime(e.target.value)}
-            className="p-1 rounded bg-zinc-700 text-white"
+            className="p-2 rounded-md bg-zinc-800 text-white border border-zinc-600"
           />
-        </div>
 
-        <div className="flex items-center gap-4 mt-3">
-          <label className="text-white whitespace-nowrap">약속 마감 시간</label>
+          <label className="text-sm">약속 마감 시간</label>
           <input
             type="datetime-local"
             value={meetingEndTime}
             onChange={(e) => setMeetingEndTime(e.target.value)}
-            className="p-1 rounded bg-zinc-700 text-white"
+            className="p-2 rounded-md bg-zinc-800 text-white border border-zinc-600"
           />
-        </div>
 
-        <div className="flex items-center gap-4 mt-3">
-          <label className="text-white whitespace-nowrap">투표 마감 시간</label>
+          <label className="text-sm">투표 마감 시간</label>
           <input
             type="datetime-local"
             value={deadline}
             readOnly
-            className="p-1 rounded bg-zinc-700 text-white opacity-70 cursor-not-allowed"
+            className="p-2 rounded-md bg-zinc-700 text-white border border-zinc-600 opacity-60 cursor-not-allowed"
           />
-        </div>
 
-        <div className="flex items-center gap-4 mt-3">
-          <label className="text-white whitespace-nowrap">투표 모집 인원</label>
+          <label className="text-sm">투표 모집 인원</label>
           <input
             type="number"
             value={recruit}
             onChange={(e) => setRecruit(Number(e.target.value))}
             min={1}
             max={20}
-            className="p-1 rounded bg-zinc-700 text-white"
+            className="p-2 rounded-md bg-zinc-800 text-white border border-zinc-600"
           />
         </div>
 
-        <div className="flex items-end gap-4 mt-3">
+        <div>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="투표 내용을 입력해주세요."
-            className="w-full h-24 p-2 rounded-md bg-zinc-700 resize-none text-white"
+            className="w-full h-24 p-3 rounded-md bg-zinc-800 text-white border border-zinc-600 resize-none placeholder-gray-400"
           />
+        </div>
 
+        <div className="flex justify-end">
           <button
             onClick={handleCreate}
-            className="bg-primary hover:bg-primary-hover text-white px-3 py-2 rounded flex justify-center items-center gap-2 whitespace-nowrap"
+            className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md font-semibold flex items-center gap-2 transition"
           >
-            {isEdit ? (
-              <>
-                <span>✏️</span>수정 완료
-              </>
-            ) : (
-              <>
-                <span>➕</span>투표 생성
-              </>
-            )}
+            {isEdit ? '✏️ 수정 완료' : '➕ 투표 생성'}
           </button>
         </div>
-      </Modal>
-    </>
+      </motion.div>
+    </Modal>
   );
 }

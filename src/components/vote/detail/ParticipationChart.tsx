@@ -3,23 +3,30 @@ interface Props {
 }
 
 export default function ParticipationChart({ rate }: Props) {
+  const circumference = 100;
+  const offset = circumference - (rate / 100) * circumference;
+
   return (
-    <div className="w-28 h-28 relative">
-      <svg className="absolute top-0 left-0 w-full h-full" viewBox="0 0 36 36">
-        <path
-          className="text-zinc-700"
-          stroke="currentColor"
-          strokeWidth="4"
+    <div className="w-24 h-24 relative">
+      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+        <circle
+          cx="18"
+          cy="18"
+          r="15.9155"
           fill="none"
-          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          stroke="#3f3f46" // zinc-700
+          strokeWidth="4"
         />
-        <path
-          className="text-primary"
+        <circle
+          cx="18"
+          cy="18"
+          r="15.9155"
+          fill="none"
           stroke="currentColor"
           strokeWidth="4"
-          fill="none"
-          strokeDasharray={`${rate}, 100`}
-          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+          strokeDasharray="100"
+          strokeDashoffset={offset}
+          className="text-primary transition-all duration-500 ease-out"
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center text-primary font-bold text-lg">
