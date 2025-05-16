@@ -1,7 +1,9 @@
 import { useAuthStore } from '@/stores/authStore';
 import { apiClient } from './apiClient';
 import { VoteRequest, VoteResponse } from '@/types/vote';
+
 import axios from 'axios';
+import { Participant } from '@/types/participant';
 
 export const VoteAPI = {
   getVotes: async () => {
@@ -64,6 +66,41 @@ export const VoteAPI = {
   closeVote: async (voteId: number) => {
     const accessToken = useAuthStore.getState().accessToken;
     const { data } = await apiClient.patch(`/votes/${voteId}/close`, null, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return data;
+  },
+
+  participate: async (voteId: number) => {
+    const accessToken = useAuthStore.getState().accessToken;
+    const { data } = await apiClient.post(`/votes/${voteId}/participants`, undefined, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return data;
+  },
+
+  getParticipantList: async (voteId: number): Promise<Participant[]> => {
+    const accessToken = useAuthStore.getState().accessToken;
+
+    const { data } = await apiClient.get(`/votes/${voteId}/participantList`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return data.map((d: any) => ({
+      id: d.userId,
+      name: d.userName,
+    }));
+  },
+
+  cancelParticipation: async (voteId: number) => {
+    const accessToken = useAuthStore.getState().accessToken;
+    const { data } = await apiClient.delete(`/votes/${voteId}/participants`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

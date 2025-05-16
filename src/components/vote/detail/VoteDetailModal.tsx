@@ -5,30 +5,50 @@ import ParticipationChart from './ParticipationChart';
 import Modal from '@/components/ui/Modal';
 import VoteOptionsMenu from '../item/VoteOptionsMenu';
 import { useAuthStore } from '@/stores/authStore';
+import { useEffect, useState } from 'react';
+import ConfirmModal from '@/components/ui/confirmModal';
 
 export default function VoteDetailModal() {
-  const { selectedVote, participateInVote, clearSelectedVote, deleteVote, closeVote } =
-    useVoteStore();
-
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const {
+    selectedVote,
+    fetchVotes,
+    deleteVote,
+    closeVote,
+    participateInVote,
+    clearSelectedVote,
+    fetchParticipantList,
+    participantList,
+    cancelParticipationInVote,
+  } = useVoteStore();
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
   const openVoteForm = useUIStore((s) => s.openVoteForm);
-  const { fetchVotes } = useVoteStore();
-
+  const currentUserId = useAuthStore.getState().userInfo?.userId;
+  const isLoading = !participantList;
+  const isParticipated = participantList?.some((p) => String(p.id) === String(currentUserId));
+  const [isLoginRequiredOpen, setIsLoginRequiredOpen] = useState(false);
   const userInfo = useAuthStore((s) => s.userInfo);
+
+  useEffect(() => {
+    if (selectedVote) {
+      fetchParticipantList(selectedVote.voteId);
+    }
+  }, [selectedVote]);
 
   if (!selectedVote) return null;
 
   const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
 
-  const handleParticipate = () => {
+  const handleParticipate = async () => {
     if (!selectedVote || !userInfo) return;
 
     const user = {
       id: userInfo.userId,
       name: userInfo.userName,
     };
-
-    participateInVote(selectedVote.voteId, user);
+    participateInVote(selectedVote.voteId);
+    setIsConfirmOpen(true);
+    await fetchParticipantList(selectedVote.voteId);
   };
 
   const isCreator = userInfo?.userId === selectedVote.creatorId;
@@ -111,21 +131,51 @@ export default function VoteDetailModal() {
         </div>
 
         <div className="mt-4">
-          <div className="text-sm text-white flex flex-col items-start gap-1">
+          <div className="text-sm text-white flex flex-col items-start gap-1 relative group w-fit">
             <img src="/participants.png" alt="Participants" className="w-11 h-8" />
-            <p>참여자</p>
+
+            <p className="cursor-default">참여자</p>
+
+            <div className="absolute left-full top-0 ml-3 hidden group-hover:block z-10 bg-white text-gray-800 text-sm rounded-md p-2 shadow-lg whitespace-nowrap border border-gray-200">
+              {participantList && participantList.length > 0 ? (
+                participantList.map((p, i) => <div key={i}>{p.name}</div>)
+              ) : (
+                <div>참여자 없음</div>
+              )}
+            </div>
           </div>
         </div>
 
         <div className="mt-auto flex justify-end">
           <button
-            onClick={handleParticipate}
-            className="bg-primary hover:bg-primary-hover transition text-white py-2 px-7 rounded-lg font-semibold text-base flex items-center gap-2"
+            onClick={
+              isParticipated
+                ? () => cancelParticipationInVote(selectedVote.voteId)
+                : handleParticipate
+            }
+            disabled={isLoading}
+            className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
+              isLoading
+                ? 'bg-gray-300 text-white cursor-wait'
+                : 'bg-primary hover:bg-primary-hover text-white'
+            }`}
           >
-            👍 참여
+            {isLoading ? '🔄 확인 중...' : isParticipated ? '❌ 참여 취소' : '👍 참여'}
           </button>
         </div>
       </div>
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        title="참여가 완료되었어요!"
+        description="약속된 시간에 만나요 😊"
+        onClose={() => setIsConfirmOpen(false)}
+      />
+      <ConfirmModal
+        isOpen={isLoginRequiredOpen}
+        title="로그인을 해야 볼 수 있어요!"
+        description="로그인 후 서비스를 이용해주세요. 😊"
+        onClose={() => setIsLoginRequiredOpen(false)}
+      />
     </Modal>
   );
 }
