@@ -12,6 +12,7 @@ const HomePage = () => {
   const fetchVotes = useVoteStore((s) => s.fetchVotes);
   const { requireAuth } = useRequireAuth();
   const openVoteForm = useUIStore((s) => s.openVoteForm);
+  const selectedVote = useVoteStore((s) => s.selectedVote);
 
   useEffect(() => {
     fetchVotes(); // 서버에서 투표 목록 불러오기
@@ -36,7 +37,7 @@ const HomePage = () => {
             </div>
           ))}
       </div>
-      <VoteDetailModal />
+      {selectedVote && <VoteDetailModal />}
 
       {/* 랭킹은 일단 비워두겠숩니ㅏ */}
       <div className="w-1/4 bg-secondary h-[770px] rounded-lg p-4 flex flex-col justify-around items-center">
