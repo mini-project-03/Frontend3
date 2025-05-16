@@ -37,6 +37,7 @@ export default function VoteDetailModal() {
   const isLoading = !participantList;
   const isButtonDisabled = isLoading || (!localIsParticipated && isFull);
   const isCreator = userInfo?.userId === selectedVote.creatorId;
+  const creator = participantList?.find((p) => p.id === selectedVote.creatorId);
 
   useEffect(() => {
     if (selectedVote) {
@@ -129,7 +130,9 @@ export default function VoteDetailModal() {
 
         <div className="mb-1">
           <div className="text-2xl font-bold text-white">{selectedVote.title}</div>
-          <div className="text-sm text-gray-400 text-right">{selectedVote.creatorId}</div>
+          <div className="text-sm text-gray-400 text-right">
+            {creator ? `${selectedVote.creatorId} ${creator.name}` : selectedVote.creatorId}
+          </div>
         </div>
         <hr className="border-t border-gray-600 mt-2" />
         <p className="mt-4 mb-4 text-gray-200 whitespace-pre-line">{selectedVote.description}</p>
