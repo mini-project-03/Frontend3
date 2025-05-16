@@ -6,6 +6,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
 import VoteFormModal from '@/components/vote/form/VoteFormModal';
 import VoteDetailModal from '@/components/vote/detail/VoteDetailModal';
+import Roulette from '@/components/ui/Roulette/Roulette';
 
 const HomePage = () => {
   const votes = useVoteStore((s) => s.votes);
@@ -39,9 +40,9 @@ const HomePage = () => {
       </div>
       {selectedVote && <VoteDetailModal />}
 
-      {/* 랭킹은 일단 비워두겠숩니ㅏ */}
-      <div className="w-1/4 bg-secondary h-[770px] rounded-lg p-4 flex flex-col justify-around items-center">
-        <h2 className="text-black mb-4">랭킹...아직 준비중...좀만 기달 </h2>
+      <div className="w-1/4 bg-item-background h-[770px] rounded-lg p-4 flex flex-col justify-between items-center">
+        {/* 룰렛 들어갈 자리 */}
+        <Roulette />
         <button
           onClick={handleOpenModal}
           className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition mt-5"
@@ -51,7 +52,6 @@ const HomePage = () => {
 
         <VoteFormModal />
       </div>
-
       <style>{`
         .overflow-y-auto::-webkit-scrollbar {
           display: none;
