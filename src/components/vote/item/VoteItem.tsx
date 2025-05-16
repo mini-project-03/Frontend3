@@ -6,6 +6,7 @@ import React from 'react';
 import VoteOptionsMenu from './VoteOptionsMenu'; // 위치에 맞게 경로 조정
 import { useAuthStore } from '@/stores/authStore'; // 실제 로그인 정보 가져오기
 import { VoteAPI } from '@/api/voteAPI';
+import { FOOD_IMAGE_PATHS } from '@/constants/imagePaths';
 
 interface VoteItemProps {
   vote: VoteResponse;
@@ -44,16 +45,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
     return `${month}월 ${day}일 ${hours}시 ${minutes}분`;
   };
 
-  const images = [
-    '/food1.png',
-    '/food2.png',
-    '/food3.png',
-    '/food4.png',
-    '/food5.png',
-    '/food6.png',
-    '/food7.png',
-    '/food8.png',
-  ];
+  const images = FOOD_IMAGE_PATHS;
   const randomImage = images[Math.floor(Math.random() * images.length)];
 
   return (
