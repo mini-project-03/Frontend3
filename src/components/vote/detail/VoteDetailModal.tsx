@@ -12,6 +12,7 @@ export default function VoteDetailModal() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [localIsParticipated, setLocalIsParticipated] = useState(false);
   const [isLoginRequiredOpen, setIsLoginRequiredOpen] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
 
   const {
     selectedVote,
@@ -68,6 +69,7 @@ export default function VoteDetailModal() {
 
     try {
       await cancelParticipationInVote(selectedVote.voteId);
+      setIsCancelConfirmOpen(true);
       await fetchParticipantList(selectedVote.voteId);
     } catch (error) {
       console.error('참여 취소 실패:', error);
@@ -194,6 +196,12 @@ export default function VoteDetailModal() {
         title="로그인을 해야 볼 수 있어요!"
         description="로그인 후 서비스를 이용해주세요. 😊"
         onClose={() => setIsLoginRequiredOpen(false)}
+      />
+      <ConfirmModal
+        isOpen={isCancelConfirmOpen}
+        title="아쉬워요 😢"
+        description="다음에 꼭 함께해요!"
+        onClose={() => setIsCancelConfirmOpen(false)}
       />
     </Modal>
   );
