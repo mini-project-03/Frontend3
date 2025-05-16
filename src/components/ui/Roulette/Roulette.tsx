@@ -1,0 +1,90 @@
+import { FOOD_IMAGE_PATHS } from '@/constants/imagePaths';
+import { useAnimation } from 'framer-motion';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import RouletteItems from './RouletteItems';
+import SelectedItemHighlight from './SelectedItemHighlight';
+
+const REPEAT_COUNT = 8;
+const PADDING = 40;
+const VISIBLE_ITEM_COUNT = 4;
+
+const Roulette = () => {
+  const controls = useAnimation();
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [selectedGlobalIndex, setSelectedGlobalIndex] = useState<number | null>(null);
+  const [containerHeight, setContainerHeight] = useState(window.innerHeight * 0.85);
+
+  useEffect(() => {
+    const handleResize = (): void => {
+      setContainerHeight(window.innerHeight * 0.85);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const visibleAreaHeight = useMemo(() => containerHeight - PADDING * 2, [containerHeight]);
+  const itemHeight = useMemo(() => visibleAreaHeight / VISIBLE_ITEM_COUNT, [visibleAreaHeight]);
+  const centerIndexOffset = useMemo(() => (VISIBLE_ITEM_COUNT - 1) / 2, []);
+  const allItems = useMemo(
+    () =>
+      Array(REPEAT_COUNT)
+        .fill(0)
+        .flatMap(() => FOOD_IMAGE_PATHS),
+    [],
+  );
+
+  const handleStartRoulette = useCallback(async (): Promise<void> => {
+    if (isSpinning) return;
+    setIsSpinning(true);
+    setSelectedIndex(null);
+    setSelectedGlobalIndex(null);
+
+    await controls.set({ y: 0 });
+
+    const totalSpins = 30 + Math.floor(Math.random() * 10);
+    const targetIndex = Math.floor(Math.random() * FOOD_IMAGE_PATHS.length);
+    const globalTargetIndex = totalSpins + targetIndex;
+    const totalOffset = (globalTargetIndex - centerIndexOffset) * itemHeight;
+
+    await controls.start({
+      y: -totalOffset,
+      transition: { duration: 3, ease: [0.1, 0.7, 0.4, 1] },
+    });
+
+    setSelectedIndex(targetIndex);
+    setSelectedGlobalIndex(globalTargetIndex);
+    setIsSpinning(false);
+  }, [controls, isSpinning, centerIndexOffset, itemHeight]);
+
+  return (
+    <div className="flex flex-col items-center w-full h-full px-4 py-6 bg-secondary rounded-lg from-yellow-50 to-white">
+      <h1 className="text-white text-2xl font-baloo-bhaijaan font-semibold mr-2 mb-4">
+        🍽️ 오늘 모먹?
+      </h1>
+      <div
+        className="relative w-full max-w-md overflow-hidden rounded-xl shadow-lg"
+        style={{ height: visibleAreaHeight }}
+      >
+        <RouletteItems
+          controls={controls}
+          allItems={allItems}
+          selectedGlobalIndex={selectedGlobalIndex}
+          selectedIndex={selectedIndex}
+          itemHeight={itemHeight}
+        />
+        {selectedGlobalIndex !== null && <SelectedItemHighlight selectedIndex={selectedIndex} />}
+      </div>
+      <button
+        onClick={handleStartRoulette}
+        disabled={isSpinning}
+        className="mt-4 px-6 py-3 bg-primary text-white font-bold rounded-full shadow hover:bg-pink-600 transition w-full max-w-md"
+        type="button"
+      >
+        {isSpinning ? '돌리는 중...' : '메뉴 뽑기'}
+      </button>
+    </div>
+  );
+};
+
+export default Roulette;
