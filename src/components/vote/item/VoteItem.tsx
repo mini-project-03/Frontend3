@@ -2,9 +2,8 @@ import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
 import { VoteResponse } from '@/types/vote';
 import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
-import React from 'react';
-import VoteOptionsMenu from './VoteOptionsMenu'; // 위치에 맞게 경로 조정
-import { useAuthStore } from '@/stores/authStore'; // 실제 로그인 정보 가져오기
+import React, { useEffect, useState } from 'react';
+import { useAuthStore } from '@/stores/authStore';
 import { VoteAPI } from '@/api/voteAPI';
 
 interface VoteItemProps {
@@ -20,18 +19,37 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   const isCreator = creatorId === userInfo?.userId;
 
   const setSelectedVote = useVoteStore((s) => s.setSelectedVote);
-  const deleteVote = useVoteStore((s) => s.deleteVote);
-  const openVoteDetail = useUIStore((s) => s.openVoteDetail);
   const fetchParticipantList = useVoteStore((s) => s.fetchParticipantList);
-
+  const openVoteDetail = useUIStore((s) => s.openVoteDetail);
   const { requireAuth } = useRequireAuth();
+
+  const [isParticipated, setIsParticipated] = useState(false);
+
+  useEffect(() => {
+    const checkParticipation = async () => {
+      if (isClosed && userInfo) {
+        try {
+          const list = await VoteAPI.getParticipantList(voteId);
+          const found = list.some((p) => String(p.id) === String(userInfo.userId));
+          setIsParticipated(found);
+        } catch (err) {
+          console.error('참여 여부 확인 실패:', err);
+        }
+      }
+    };
+    checkParticipation();
+  }, [isClosed, userInfo, voteId]);
+
+  const handleOpenResult = () => {
+    setSelectedVote(vote);
+    openVoteDetail(vote);
+    fetchParticipantList(vote.voteId);
+  };
 
   const handleClick = () => {
     if (isClosed) return;
     requireAuth(() => {
-      setSelectedVote(vote);
-      openVoteDetail(vote);
-      fetchParticipantList(vote.voteId);
+      handleOpenResult();
     });
   };
 
@@ -60,8 +78,8 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
     <div
       key={voteId}
       onClick={handleClick}
-      className={`relative cursor-pointer bg-item-background p-6 rounded-md shadow-md w-[309px] h-[427px] hover:opacity-90 transition ${
-        isClosed ? 'pointer-events-none opacity-50' : ''
+      className={`relative bg-item-background p-6 rounded-md shadow-md w-[309px] h-[427px] transition ${
+        isClosed ? 'opacity-50' : 'hover:opacity-90 cursor-pointer'
       }`}
     >
       <div className="mb-4">
@@ -72,10 +90,22 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
         />
         <div className="flex items-center justify-between">
           {isClosed && (
-            <div className="absolute bg-[#BBBBBB]/60 inset-0 rounded-md flex items-center justify-center">
+            <div className="absolute bg-[#BBBBBB]/70 inset-0 rounded-md flex flex-col items-center justify-center">
               <div className=" bg-opacity-60 text-black text-2xl font-bold rounded-md px-2 py-1">
                 마감된 투표입니다!
               </div>
+
+              {isParticipated && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleOpenResult();
+                  }}
+                  className="px-4 py-1 bg-white text-black rounded hover:bg-secondary hover:text-black transition"
+                >
+                  결과 확인
+                </button>
+              )}
             </div>
           )}
         </div>

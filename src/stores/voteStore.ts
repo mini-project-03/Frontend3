@@ -29,7 +29,15 @@ export const useVoteStore = create<VoteState>((set) => ({
   fetchVotes: async () => {
     try {
       const voteList = await VoteAPI.getVotes();
-      set({ votes: sortVotes(voteList) });
+      const now = new Date();
+
+      const updatedVotes = voteList.map((vote) => {
+        const deadline = new Date(vote.deadline);
+        const isClosed = deadline < now;
+        return { ...vote, status: isClosed ? 'closed' : vote.status };
+      });
+
+      set({ votes: sortVotes(updatedVotes) });
     } catch (err) {
       console.error('투표 목록 불러오기 실패:', err);
     }
@@ -142,7 +150,7 @@ export const useVoteStore = create<VoteState>((set) => ({
   },
   deleteVote: async (voteId: number) => {
     try {
-      await VoteAPI.deleteVote(voteId); // ✅ 실제 API 호출
+      await VoteAPI.deleteVote(voteId);
       set((state) => ({
         votes: state.votes.filter((vote) => vote.voteId !== voteId),
       }));
