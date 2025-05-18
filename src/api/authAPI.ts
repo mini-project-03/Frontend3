@@ -13,7 +13,7 @@ export const AuthAPI = {
   },
 
   logout: async (accessToken: string | null) => {
-    if(!accessToken) {
+    if (!accessToken) {
       throw new Error('No access token provided for logout');
     }
     const { data } = await apiClient.get('/users/logout', {
@@ -23,5 +23,16 @@ export const AuthAPI = {
       withCredentials: true,
     });
     return data;
-  }
+  },
+
+  refreshAccessToken: async () => {
+    const { data } = await apiClient.post<{ 'access-token': string }>(
+      '/users/refresh-token',
+      null,
+      {
+        withCredentials: true,
+      },
+    );
+    return data['access-token'];
+  },
 };
