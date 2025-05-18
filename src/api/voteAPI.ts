@@ -84,13 +84,7 @@ export const VoteAPI = {
   },
 
   getParticipantList: async (voteId: number): Promise<Participant[]> => {
-    const accessToken = useAuthStore.getState().accessToken;
-
-    const { data } = await apiClient.get(`/votes/${voteId}/participantList`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const { data } = await apiClient.get(`/votes/${voteId}/participantList`);
 
     return data.map((d: any) => ({
       id: d.userId,
