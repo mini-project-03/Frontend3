@@ -28,15 +28,14 @@ export default function VoteFormModal() {
         });
         alert('투표가 수정되었습니다.');
         closeVoteForm();
-        navigate('/');
         return;
       }
 
       // 생성일 때만 실행
-      alert('투표가 수정되었습니다.');
+      await createVote(data);
+      await fetchVotes();
       closeVoteForm();
-      navigate('/home');
-      return;
+      setIsConfirmOpen(true);
     } catch (error) {
       console.error('투표 생성/수정 실패:', error);
       alert('투표 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
