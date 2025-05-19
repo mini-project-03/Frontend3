@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
-import { FOOD_IMAGE_PATHS } from '@/constants/imagePaths';
 
 interface SelectedItemHighlightProps {
-  selectedIndex: number | null;
+  src: string;
 }
 
-const SelectedItemHighlight = ({ selectedIndex }: SelectedItemHighlightProps) => {
-  if (selectedIndex === null) return null;
+const SelectedItemHighlight = ({ src }: SelectedItemHighlightProps) => {
+  const name = src.replace(/^\/|(\.png|\.jpg)$/g, '');
 
   return (
     <motion.div
@@ -20,7 +19,7 @@ const SelectedItemHighlight = ({ selectedIndex }: SelectedItemHighlightProps) =>
     >
       <div className="bg-white bg-opacity-80 px-4 py-2 rounded-full border-2 border-primary text-primary font-bold shadow-lg text-lg flex items-center gap-2">
         <span>오늘은</span>
-        <span>{FOOD_IMAGE_PATHS[selectedIndex].replace(/^\/|\.png$/g, '')}</span>
+        <span>{name}</span>
       </div>
     </motion.div>
   );

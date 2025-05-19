@@ -18,7 +18,7 @@ const RouletteItems = ({
     <motion.div animate={controls} initial={{ y: 0 }} className="flex flex-col">
       {allItems.map((src, index) => {
         const isWinner = index === selectedGlobalIndex;
-        const altText = src.replace(/^\/|\.png$/g, '');
+        const altText = src.replace(/^\/|(\.png|\.jpg)$/g, '');
 
         return (
           <div
