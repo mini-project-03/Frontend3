@@ -51,9 +51,7 @@ export default function VoteDetailModal() {
     }
   }, [participantList, currentUserId]);
 
-  const participationRate = Math.round(
-    (selectedVote.participants / selectedVote.recruit) * 100
-  );
+  const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
 
   const handleParticipate = async () => {
     if (!selectedVote || !userInfo) return;
@@ -100,11 +98,15 @@ export default function VoteDetailModal() {
       alert('작성자만 삭제할 수 있습니다.');
       return;
     }
-    await deleteVote(selectedVote.voteId);
-    alert('투표가 성공적으로 삭제되었습니다.');
-
-    await fetchVotes();
-    handleClose();
+    try {
+      await deleteVote(selectedVote.voteId);
+      alert('투표가 성공적으로 삭제되었습니다.');
+      await fetchVotes();
+      handleClose();
+    } catch (err) {
+      console.error('투표 삭제 실패:', err);
+      alert('투표 삭제 중 오류가 발생했습니다.');
+    }
   };
 
   const handleForceClose = async () => {
