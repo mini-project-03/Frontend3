@@ -1,4 +1,3 @@
-// pages/Register.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaFacebookF, FaWhatsapp, FaTelegramPlane } from 'react-icons/fa';
@@ -7,10 +6,9 @@ import image1 from '/public/image 1.png';
 import image2 from '/public/register.png';
 import ConfirmModal from '@/components/ui/confirmModal.tsx';
 
-const Register = () => {
+const SignupPage = () => {
   const navigate = useNavigate();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false); // 모달 상태 추가
-
 
   // 상태 관리
   const [formData, setFormData] = useState({
@@ -106,7 +104,7 @@ const Register = () => {
               type="submit"
               className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 rounded-md text-white font-semibold mt-4"
             >
-              Register
+              SignupPage
             </button>
           </form>
 
@@ -170,4 +168,4 @@ const Input = ({
   </div>
 );
 
-export default Register;
+export default SignupPage;
