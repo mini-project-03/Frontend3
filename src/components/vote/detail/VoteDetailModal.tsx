@@ -10,6 +10,9 @@ import ConfirmModal from '@/components/ui/confirmModal';
 
 export default function VoteDetailModal() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [localIsParticipated, setLocalIsParticipated] = useState(false);
+  const [isCancelConfirmOpen, setIsCancelConfirmOpen] = useState(false);
+
   const {
     selectedVote,
     fetchVotes,
@@ -21,13 +24,19 @@ export default function VoteDetailModal() {
     participantList,
     cancelParticipationInVote,
   } = useVoteStore();
+
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
   const openVoteForm = useUIStore((s) => s.openVoteForm);
-  const currentUserId = useAuthStore.getState().userInfo?.userId;
-  const isLoading = !participantList;
-  const isParticipated = participantList?.some((p) => String(p.id) === String(currentUserId));
-  const [isLoginRequiredOpen, setIsLoginRequiredOpen] = useState(false);
   const userInfo = useAuthStore((s) => s.userInfo);
+  const currentUserId = userInfo?.userId ?? null;
+
+  if (!selectedVote) return null;
+  const isFull = selectedVote!.participants >= selectedVote!.recruit;
+
+  const isLoading = !participantList;
+  const isButtonDisabled = isLoading || (!localIsParticipated && isFull);
+  const isCreator = userInfo?.userId === selectedVote.creatorId;
+  const creator = participantList?.find((p) => p.id === selectedVote.creatorId);
 
   useEffect(() => {
     if (selectedVote) {
@@ -35,29 +44,49 @@ export default function VoteDetailModal() {
     }
   }, [selectedVote]);
 
-  if (!selectedVote) return null;
+  useEffect(() => {
+    if (participantList && currentUserId) {
+      const isParticipating = participantList.some((p) => String(p.id) === String(currentUserId));
+      setLocalIsParticipated(isParticipating);
+    }
+  }, [participantList, currentUserId]);
 
-  const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
+  const participationRate = Math.round(
+    (selectedVote.participants / selectedVote.recruit) * 100
+  );
 
   const handleParticipate = async () => {
     if (!selectedVote || !userInfo) return;
 
-    const user = {
-      id: userInfo.userId,
-      name: userInfo.userName,
-    };
-    participateInVote(selectedVote.voteId);
-    setIsConfirmOpen(true);
-    await fetchParticipantList(selectedVote.voteId);
+    try {
+      await participateInVote(selectedVote.voteId);
+      setIsConfirmOpen(true);
+      await fetchParticipantList(selectedVote.voteId);
+    } catch (error) {
+      console.error('참여 실패:', error);
+      alert('참여에 실패했습니다. 다시 시도해주세요.');
+    }
   };
 
-  const isCreator = userInfo?.userId === selectedVote.creatorId;
+  const handleCancelParticipation = async () => {
+    if (!selectedVote) return;
+
+    try {
+      await cancelParticipationInVote(selectedVote.voteId);
+      setIsCancelConfirmOpen(true);
+      await fetchParticipantList(selectedVote.voteId);
+    } catch (error) {
+      console.error('참여 취소 실패:', error);
+      alert('참여 취소에 실패했습니다. 다시 시도해주세요.');
+    }
+  };
 
   const handleClose = () => {
     clearSelectedVote();
     closeVoteDetail();
     fetchVotes();
   };
+
   const handleEdit = () => {
     if (!isCreator) {
       alert('작성자만 수정할 수 있습니다.');
@@ -102,7 +131,9 @@ export default function VoteDetailModal() {
 
         <div className="mb-1">
           <div className="text-2xl font-bold text-white">{selectedVote.title}</div>
-          <div className="text-sm text-gray-400 text-right">{selectedVote.creatorId}</div>
+          <div className="text-sm text-gray-400 text-right">
+            {creator ? `${selectedVote.creatorId} ${creator.name}` : selectedVote.creatorId}
+          </div>
         </div>
         <hr className="border-t border-gray-600 mt-2" />
         <p className="mt-4 mb-4 text-gray-200 whitespace-pre-line">{selectedVote.description}</p>
@@ -148,19 +179,21 @@ export default function VoteDetailModal() {
 
         <div className="mt-auto flex justify-end">
           <button
-            onClick={
-              isParticipated
-                ? () => cancelParticipationInVote(selectedVote.voteId)
-                : handleParticipate
-            }
-            disabled={isLoading}
+            onClick={localIsParticipated ? handleCancelParticipation : handleParticipate}
+            disabled={isButtonDisabled}
             className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
               isLoading
                 ? 'bg-gray-300 text-white cursor-wait'
                 : 'bg-primary hover:bg-primary-hover text-white'
             }`}
           >
-            {isLoading ? '🔄 확인 중...' : isParticipated ? '❌ 참여 취소' : '👍 참여'}
+            {isLoading
+              ? '🔄 확인 중...'
+              : localIsParticipated
+                ? '❌ 참여 취소'
+                : isFull
+                  ? '🚫 모집 완료'
+                  : '👍 참여'}
           </button>
         </div>
       </div>
@@ -171,10 +204,10 @@ export default function VoteDetailModal() {
         onClose={() => setIsConfirmOpen(false)}
       />
       <ConfirmModal
-        isOpen={isLoginRequiredOpen}
-        title="로그인을 해야 볼 수 있어요!"
-        description="로그인 후 서비스를 이용해주세요. 😊"
-        onClose={() => setIsLoginRequiredOpen(false)}
+        isOpen={isCancelConfirmOpen}
+        title="아쉬워요 😢"
+        description="다음에 꼭 함께해요!"
+        onClose={() => setIsCancelConfirmOpen(false)}
       />
     </Modal>
   );

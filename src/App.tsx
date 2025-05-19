@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import Register from '@/pages/Register.tsx';
+import SignupPage from '@/pages/SignupPage';
 import BaseLayout from './components/layout/BaseLayout';
 import RandomMenuBox from '@/pages/RandomMenuBox.tsx';
 
@@ -12,7 +12,7 @@ function App() {
       <Route path="/" element={<BaseLayout />}>
         <Route index element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
-        <Route path="register" element={<Register />} />
+        <Route path="signup" element={<SignupPage />} />
       </Route>
     </Routes>
   );
