@@ -18,9 +18,15 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   const { requireAuth } = useRequireAuth();
 
   const handleClick = () => {
-    requireAuth(() => {
-      setSelectedVote(vote);
-      openVoteDetail(vote);
+    requireAuth(async () => {
+      await useVoteStore.getState().fetchVotes(); // ✅ 전체 투표 목록 최신화
+      const updatedVote = useVoteStore.getState().votes.find((v) => v.voteId === voteId);
+      if (updatedVote) {
+        setSelectedVote(updatedVote); // ✅ 최신 정보로 set
+        openVoteDetail(updatedVote); // ✅ 최신 정보 기반 모달 오픈
+      } else {
+        console.warn('투표 정보를 찾을 수 없습니다.');
+      }
     });
   };
 

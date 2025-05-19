@@ -65,6 +65,7 @@ export default function VoteDetailModal() {
   const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
 
   const handleParticipate = async () => {
+    await fetchVotes();
     if (!selectedVote || !userInfo) return;
 
     if (isClosed) {
@@ -117,7 +118,6 @@ export default function VoteDetailModal() {
   };
 
   const handleDelete = async () => {
-
     if (!isCreator) {
       toast.warning('작성자만 삭제할 수 있습니다.');
 
@@ -135,7 +135,6 @@ export default function VoteDetailModal() {
   };
 
   const handleForceClose = async () => {
-
     if (!isCreator) {
       toast.warning('작성자만 마감할 수 있습니다.');
 
