@@ -56,6 +56,32 @@ export default function VoteDetailModal() {
   }, [selectedVote]);
 
   useEffect(() => {
+    let isMounted = true;
+
+    const fetchLatestVote = async () => {
+      if (!selectedVote) return;
+
+      const latestVotes = useVoteStore.getState().votes;
+      const latest = latestVotes.find((v) => v.voteId === selectedVote.voteId);
+
+      if (!latest) {
+        await updateSelectedVote(selectedVote.voteId);
+      } else if (
+        latest.description !== selectedVote.description ||
+        latest.participants !== selectedVote.participants
+      ) {
+        setSelectedVote(latest); // 변경사항이 있을 때만 set
+      }
+    };
+
+    fetchLatestVote();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedVote?.voteId]); // ✅ voteId 기준으로만 작동
+
+  useEffect(() => {
     if (participantList && currentUserId) {
       const isParticipating = participantList.some((p) => String(p.id) === String(currentUserId));
       setLocalIsParticipated(isParticipating);
@@ -117,7 +143,6 @@ export default function VoteDetailModal() {
   };
 
   const handleDelete = async () => {
-
     if (!isCreator) {
       toast.warning('작성자만 삭제할 수 있습니다.');
 
@@ -135,7 +160,6 @@ export default function VoteDetailModal() {
   };
 
   const handleForceClose = async () => {
-
     if (!isCreator) {
       toast.warning('작성자만 마감할 수 있습니다.');
 
