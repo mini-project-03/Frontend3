@@ -18,26 +18,28 @@ export default function VoteFormModal() {
   const resetRef = useRef<() => void>(() => {}); // 폼 초기화용 ref
 
   const handleFormSubmit = async (data: VoteRequest) => {
-    await fetchVotes();
-    closeVoteForm();
-    setIsConfirmOpen(true);
-    if (voteFormMode === 'edit' && voteToEdit) {
-      await updateVote(voteToEdit.voteId, data);
-      setSelectedVote({
-        ...voteToEdit,
-        ...data,
-      });
+    try {
+      if (voteFormMode === 'edit' && voteToEdit) {
+        await updateVote(voteToEdit.voteId, data);
+        await fetchVotes();
+        setSelectedVote({
+          ...voteToEdit,
+          ...data,
+        });
 
-      alert('투표가 수정되었습니다.');
-      closeVoteForm();
-      navigate('/');
-      return;
-    } else {
-      await createVote(data);
+        alert('투표가 수정되었습니다.');
+        closeVoteForm();
+        navigate('/');
+      } else {
+        await createVote(data);
+        await fetchVotes();
+        closeVoteForm();
+        setIsConfirmOpen(true);
+      }
+    } catch (error) {
+      console.error('투표 생성/수정 실패:', error);
+      alert('투표 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
-    await fetchVotes();
-    closeVoteForm();
-    setIsConfirmOpen(true);
   };
 
   const handleConfirmClose = () => {
