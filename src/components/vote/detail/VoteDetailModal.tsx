@@ -29,6 +29,7 @@ export default function VoteDetailModal() {
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
   const openVoteForm = useUIStore((s) => s.openVoteForm);
   const userInfo = useAuthStore((s) => s.userInfo);
+  const { setSelectedVote } = useVoteStore();
   const currentUserId = userInfo?.userId ?? null;
 
   if (!selectedVote) return null;
@@ -39,6 +40,12 @@ export default function VoteDetailModal() {
   const creator = participantList?.find((p) => p.id === selectedVote.creatorId);
   const isButtonDisabled =
     isLoading || (!localIsParticipated && isFull) || (localIsParticipated && isCreator);
+
+  const updateSelectedVote = async (voteId: number) => {
+    await fetchVotes();
+    const updated = useVoteStore.getState().votes.find((v) => v.voteId === voteId);
+    if (updated) setSelectedVote(updated);
+  };
 
   useEffect(() => {
     if (selectedVote) {
@@ -62,6 +69,7 @@ export default function VoteDetailModal() {
       await participateInVote(selectedVote.voteId);
       setIsConfirmOpen(true);
       await fetchParticipantList(selectedVote.voteId);
+      await updateSelectedVote(selectedVote.voteId);
     } catch (error) {
       console.error('참여 실패:', error);
       alert('참여에 실패했습니다. 다시 시도해주세요.');
@@ -75,6 +83,7 @@ export default function VoteDetailModal() {
       await cancelParticipationInVote(selectedVote.voteId);
       setIsCancelConfirmOpen(true);
       await fetchParticipantList(selectedVote.voteId);
+      await updateSelectedVote(selectedVote.voteId);
     } catch (error) {
       console.error('참여 취소 실패:', error);
       alert('참여 취소에 실패했습니다. 다시 시도해주세요.');
