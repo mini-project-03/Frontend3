@@ -51,7 +51,9 @@ export default function VoteDetailModal() {
     }
   }, [participantList, currentUserId]);
 
-  const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
+  const participationRate = Math.round(
+    (selectedVote.participants / selectedVote.recruit) * 100
+  );
 
   const handleParticipate = async () => {
     if (!selectedVote || !userInfo) return;

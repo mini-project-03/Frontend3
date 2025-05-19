@@ -1,29 +1,52 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import image1 from '/public/image 1.png';
 import { useAuthStore } from '@/stores/authStore.ts';
 import LogoutButton from '@/components/LogoutButton.tsx';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const userInfo = useAuthStore((state) => state.userInfo);
+
+  const isLoginPage = location.pathname === '/login';
 
   return (
-    <header className="container mx-auto w-full bg-background px-6 py-4 flex justify-between items-center border-b border-gray-700">
-      <div className="flex items-center">
-        <span className="text-primary text-3xl font-baloo-bhaijaan font-semibold mr-2">Momuk</span>
-        <img src={image1} alt="Momuk Logo" className="w-8 h-8" />
-      </div>
-      <div className="flex gap-2">
-        {!accessToken ? (
-          <button
-            className="text-white bg-primary hover:bg-pink-600 px-4 py-2 rounded transition"
-            onClick={() => navigate('/login')}
-          >
-            Login
-          </button>
-        ) : (
-          <LogoutButton />
-        )}
+    <header className="w-full bg-[#1E2030]/80 backdrop-blur-md border-b border-[#2f3244] shadow-md">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-3">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={() => navigate('/')}
+        >
+          <span className="text-pink-300 text-2xl font-bold font-baloo-bhaijaan select-none">
+            Momuk
+          </span>
+          <img
+            src={image1}
+            alt="Momuk Logo"
+            className="w-8 h-8 object-contain"
+            style={{ marginBottom: '2px' }} // 이미지 위치 살짝 위로 조정 (필요시)
+          />
+        </div>
+
+        <div className="flex items-center gap-4">
+          {accessToken && userInfo?.userId && (
+            <span className="text-sm text-white/70 whitespace-nowrap">
+              반갑습니다 <span className="font-semibold text-white">{userInfo.userId}</span>님!
+            </span>
+          )}
+
+          {!accessToken && !isLoginPage && (
+            <button
+              className="bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-md transition"
+              onClick={() => navigate('/login')}
+            >
+              Login
+            </button>
+          )}
+
+          {accessToken && <LogoutButton />}
+        </div>
       </div>
     </header>
   );
