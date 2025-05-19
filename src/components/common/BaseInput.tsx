@@ -4,12 +4,13 @@ type BaseInputProps = {
   type?: string;
   value: string;
   onChange: (id: string, value: string) => void;
+  error?: string;
 };
 
-const BaseInput = ({ id, label, type = 'text', value, onChange }: BaseInputProps) => {
+const BaseInput = ({ id, label, type = 'text', value, onChange, error }: BaseInputProps) => {
   return (
     <div>
-      <label htmlFor={id} className="block mb-1 text-sm text-white">
+      <label htmlFor={id} className="block mb-1 text-sm font-medium text-white">
         {label}
       </label>
       <input
@@ -17,8 +18,11 @@ const BaseInput = ({ id, label, type = 'text', value, onChange }: BaseInputProps
         type={type}
         value={value}
         onChange={(e) => onChange(id, e.target.value)}
-        className="w-full px-4 py-2 rounded-3xl bg-transparent border border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white"
+        className={`w-full px-4 py-2 rounded-3xl bg-gray-800 border ${
+          error ? 'border-red-500' : 'border-gray-600'
+        } text-white focus:outline-none`}
       />
+      {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
     </div>
   );
 };
