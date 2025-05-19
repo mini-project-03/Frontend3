@@ -64,14 +64,16 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   };
 
   const images = [
-    '/food1.png',
-    '/food2.png',
-    '/food3.png',
-    '/food4.png',
-    '/food5.png',
-    '/food6.png',
-    '/food7.png',
-    '/food8.png',
+    '/restaurant2.jpg',
+    '/restaurant3.jpg',
+    '/restaurant4.jpg',
+    '/restaurant5.jpg',
+    '/restaurant6.jpg',
+    '/restaurant7.jpg',
+    '/restaurant8.jpg',
+    '/restaurant9.jpg',
+    '/restaurant10.jpg',
+    '/restaurant11.jpg',
   ];
   const imageIndex = voteId % images.length;
   const fixedImage = images[imageIndex];
