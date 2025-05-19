@@ -14,11 +14,8 @@ const Header = () => {
   return (
     <header className="w-full bg-[#1E2030]/80 backdrop-blur-md border-b border-[#2f3244] shadow-md">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-3">
-        <div
-          className="flex items-center gap-2 cursor-pointer"
-          onClick={() => navigate('/')}
-        >
-          <span className="text-pink-300 text-2xl font-bold font-baloo-bhaijaan select-none">
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+          <span className="text-primary text-2xl font-bold font-baloo-bhaijaan select-none">
             Momuk
           </span>
           <img
@@ -38,7 +35,7 @@ const Header = () => {
 
           {!accessToken && !isLoginPage && (
             <button
-              className="bg-pink-400 hover:bg-pink-500 text-white px-4 py-2 rounded-md transition"
+              className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md transition"
               onClick={() => navigate('/login')}
             >
               Login

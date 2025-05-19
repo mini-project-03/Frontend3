@@ -34,9 +34,10 @@ export default function VoteDetailModal() {
   const isFull = selectedVote!.participants >= selectedVote!.recruit;
 
   const isLoading = !participantList;
-  const isButtonDisabled = isLoading || (!localIsParticipated && isFull);
   const isCreator = userInfo?.userId === selectedVote.creatorId;
   const creator = participantList?.find((p) => p.id === selectedVote.creatorId);
+  const isButtonDisabled =
+    isLoading || (!localIsParticipated && isFull) || (localIsParticipated && isCreator);
 
   useEffect(() => {
     if (selectedVote) {
@@ -51,9 +52,7 @@ export default function VoteDetailModal() {
     }
   }, [participantList, currentUserId]);
 
-  const participationRate = Math.round(
-    (selectedVote.participants / selectedVote.recruit) * 100
-  );
+  const participationRate = Math.round((selectedVote.participants / selectedVote.recruit) * 100);
 
   const handleParticipate = async () => {
     if (!selectedVote || !userInfo) return;
