@@ -8,6 +8,7 @@ export default {
         'primary-variant': '#ffdbd7',
         'primary-hover': '#f28174',
         secondary: '#9bb4ff',
+        'secondary-hover': '#6f93ff',
         error: '#FF0000',
         background: '#252836',
         'item-background': '#1F1D2B',
