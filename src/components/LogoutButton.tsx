@@ -14,6 +14,7 @@ const LogoutButton = () => {
     try {
       if (accessToken) {
         await AuthAPI.logout(accessToken);
+        clearAccessToken(); //여기
       }
     } catch (error) {
       // 401은 무시해도 괜찮음
