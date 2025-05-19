@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import BaseInput from '../common/BaseInput';
-import { validateField, validateForm } from '@/utils/AuthFormValidation';
+import { validateForm } from '@/utils/AuthFormValidation';
 
 type Field = {
   id: string;
@@ -24,10 +24,9 @@ const AuthForm = ({ title, fields, buttonText, onSubmit, bottomText }: AuthFormP
   const handleChange = useCallback((id: string, value: string) => {
     setFormData((prev) => {
       const updated = { ...prev, [id]: value };
-      const errorMsg = validateField(id, value);
-      setErrors((prevErrors) => ({ ...prevErrors, [id]: errorMsg }));
+      const { isValid, errors } = validateForm(updated);
 
-      const { isValid } = validateForm(updated);
+      setErrors(errors);
       setIsFormValid(isValid);
 
       return updated;
