@@ -18,7 +18,7 @@ const SignupPage = () => {
       };
       const response = await AuthAPI.signup(signupData);
       toast.success(response.message);
-      navigate('/');
+      navigate('/home');
     } catch (error: any) {
       toast.error(error?.response?.data?.message || '회원가입 실패');
     }
