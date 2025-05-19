@@ -213,11 +213,17 @@ export default function VoteDetailModal() {
           <button
             onClick={(e) => {
               e.preventDefault();
+
               if (isClosed) {
                 toast.warning('마감된 투표는 참여가 불가능합니다.');
                 return;
               }
+
               if (localIsParticipated) {
+                if (isCreator) {
+                  toast.warning('본인이 만든 투표는 참여 취소할 수 없습니다.');
+                  return;
+                }
                 handleCancelParticipation();
               } else {
                 handleParticipate();
@@ -225,10 +231,7 @@ export default function VoteDetailModal() {
             }}
             disabled={isButtonDisabled}
             className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
-              isLoading ||
-              isClosed ||
-              (!localIsParticipated && isFull) ||
-              (localIsParticipated && isCreator)
+              isLoading || isClosed || (!localIsParticipated && isFull)
                 ? 'bg-gray-500 text-white cursor-not-allowed'
                 : 'bg-primary hover:bg-primary-hover text-white'
             }`}
