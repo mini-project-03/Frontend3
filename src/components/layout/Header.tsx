@@ -29,7 +29,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           {accessToken && userInfo?.userId && (
             <span className="text-sm text-white/70 whitespace-nowrap">
-              반갑습니다 <span className="font-semibold text-white">{userInfo.userId}</span>님!
+              반갑습니다 <span className="font-semibold text-white">{userInfo.userName}</span>님!
             </span>
           )}
 
