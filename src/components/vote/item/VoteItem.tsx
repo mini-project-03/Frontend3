@@ -73,8 +73,8 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
     '/food7.png',
     '/food8.png',
   ];
-  const randomImage = images[Math.floor(Math.random() * images.length)];
-
+  const imageIndex = voteId % images.length;
+  const fixedImage = images[imageIndex];
   return (
     <div
       onClick={handleClick}
@@ -85,7 +85,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
       {/* 이미지 영역 */}
       <div className="relative overflow-hidden rounded-xl">
         <img
-          src={randomImage}
+          src={fixedImage}
           alt={title}
           className={`w-full h-[180px] object-cover transition-transform duration-300 group-hover:scale-105 ${isClosed ? 'blur-sm' : ''}`}
         />{' '}
