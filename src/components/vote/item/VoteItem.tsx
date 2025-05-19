@@ -78,9 +78,8 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   return (
     <div
       onClick={handleClick}
-      className={`relative group cursor-pointer bg-[#1F1F1F] p-4 rounded-2xl shadow-lg w-full max-w-[300px] transition-transform duration-300 hover:scale-[1.03] ${
-        isClosed ? 'pointer-events-none opacity-50' : ''
-      }`}
+      className={`relative group cursor-pointer bg-[#1F1F1F] p-4 rounded-2xl shadow-lg w-full max-w-[300px] transition-transform duration-300 hover:scale-[1.03]
+         ${isClosed ? 'opacity-50' : ''}`}
     >
       {/* 이미지 영역 */}
       <div className="relative overflow-hidden rounded-xl">
@@ -98,7 +97,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
                   e.stopPropagation();
                   handleOpenResult();
                 }}
-                className="px-4 py-1 bg-white text-black rounded hover:bg-secondary hover:text-black transition"
+                className="px-4 py-1 bg-white text-black rounded hover:bg-primary hover:text-black transition font-bold"
               >
                 결과 확인
               </button>
