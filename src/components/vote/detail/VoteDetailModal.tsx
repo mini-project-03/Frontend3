@@ -223,6 +223,7 @@ export default function VoteDetailModal() {
                 handleParticipate();
               }
             }}
+            disabled={isButtonDisabled}
             className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
               isLoading ||
               isClosed ||
