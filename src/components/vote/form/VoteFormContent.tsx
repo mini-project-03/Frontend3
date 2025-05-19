@@ -6,6 +6,7 @@ import { validateVoteForm } from '@/utils/VoteFormValidation';
 import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
 import { useAuthStore } from '@/stores/authStore';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 export default function VoteFormContent({
   onSubmit,
@@ -58,14 +59,14 @@ export default function VoteFormContent({
   }, []);
 
   const handleCreate = () => {
-    const result = validateVoteForm({ title, meetingStartTime, meetingEndTime, recruit });
+    const result = validateVoteForm({ title, meetingStartTime, meetingEndTime, deadline, recruit });
     if (!result.valid) {
-      alert(result.message);
+      toast.warning(result.message);
       return;
     }
 
     if (!userInfo) {
-      alert('로그인 후 이용해주세요.');
+      toast.warning('로그인 후 이용해주세요.');
       return;
     }
 

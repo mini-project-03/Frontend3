@@ -29,6 +29,7 @@ export default function VoteDetailModal() {
   const closeVoteDetail = useUIStore((s) => s.closeVoteDetail);
   const openVoteForm = useUIStore((s) => s.openVoteForm);
   const userInfo = useAuthStore((s) => s.userInfo);
+  const { setSelectedVote } = useVoteStore();
   const currentUserId = userInfo?.userId ?? null;
 
   if (!selectedVote) return null;
@@ -41,6 +42,12 @@ export default function VoteDetailModal() {
 
   const isButtonDisabled =
     isLoading || isClosed || (!localIsParticipated && isFull) || (localIsParticipated && isCreator);
+
+  const updateSelectedVote = async (voteId: number) => {
+    await fetchVotes();
+    const updated = useVoteStore.getState().votes.find((v) => v.voteId === voteId);
+    if (updated) setSelectedVote(updated);
+  };
 
   useEffect(() => {
     if (selectedVote) {
@@ -69,9 +76,10 @@ export default function VoteDetailModal() {
       await participateInVote(selectedVote.voteId);
       setIsConfirmOpen(true);
       await fetchParticipantList(selectedVote.voteId);
+      await updateSelectedVote(selectedVote.voteId);
     } catch (error) {
       console.error('참여 실패:', error);
-      alert('참여에 실패했습니다. 다시 시도해주세요.');
+      toast.error('참여에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -87,9 +95,10 @@ export default function VoteDetailModal() {
       await cancelParticipationInVote(selectedVote.voteId);
       setIsCancelConfirmOpen(true);
       await fetchParticipantList(selectedVote.voteId);
+      await updateSelectedVote(selectedVote.voteId);
     } catch (error) {
       console.error('참여 취소 실패:', error);
-      alert('참여 취소에 실패했습니다. 다시 시도해주세요.');
+      toast.error('참여 취소에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -101,15 +110,17 @@ export default function VoteDetailModal() {
 
   const handleEdit = () => {
     if (!isCreator) {
-      alert('작성자만 수정할 수 있습니다.');
+      toast.warning('작성자만 수정할 수 있습니다.');
       return;
     }
     openVoteForm(selectedVote);
   };
 
   const handleDelete = async () => {
-    if (!isCreator || isClosed) {
-      alert('작성자만 삭제할 수 있습니다.');
+
+    if (!isCreator) {
+      toast.warning('작성자만 삭제할 수 있습니다.');
+
       return;
     }
     try {
@@ -119,13 +130,15 @@ export default function VoteDetailModal() {
       handleClose();
     } catch (err) {
       console.error('투표 삭제 실패:', err);
-      alert('투표 삭제 중 오류가 발생했습니다.');
+      toast.error('투표 삭제 중 오류가 발생했습니다.');
     }
   };
 
   const handleForceClose = async () => {
-    if (!isCreator || isClosed) {
-      alert('작성자만 마감할 수 있습니다.');
+
+    if (!isCreator) {
+      toast.warning('작성자만 마감할 수 있습니다.');
+
       return;
     }
     await closeVote(selectedVote.voteId);
