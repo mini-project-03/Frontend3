@@ -11,22 +11,23 @@ import Roulette from '@/components/ui/Roulette/Roulette';
 const HomePage = () => {
   const votes = useVoteStore((s) => s.votes);
   const fetchVotes = useVoteStore((s) => s.fetchVotes);
-  // const { requireAuth } = useRequireAuth();
-  // const openVoteForm = useUIStore((s) => s.openVoteForm);
   const selectedVote = useVoteStore((s) => s.selectedVote);
 
   useEffect(() => {
-    fetchVotes(); // 서버에서 투표 목록 불러오기
+    fetchVotes();
   }, []);
 
-  // const handleOpenModal = () => {
-  //   requireAuth(openVoteForm);
-  // };
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const visibleVotes = votes.filter((vote) => {
+    const meetingTime = new Date(vote.meetingStartTime);
+    return meetingTime >= todayStart;
+  });
 
   return (
     <div className="container overflow-hidden mx-auto px-4 py-4 flex gap-6">
       <div className="flex-1 grid gap-4 overflow-y-auto h-[770px] grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))]">
-        {votes
+        {visibleVotes
           .slice()
           .sort((a, b) => {
             if (a.status !== b.status) return a.status === 'closed' ? 1 : -1;

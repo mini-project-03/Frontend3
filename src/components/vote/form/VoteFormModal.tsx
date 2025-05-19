@@ -6,6 +6,7 @@ import Modal from '@/components/ui/Modal';
 import ConfirmModal from '@/components/ui/confirmModal';
 import { useVoteStore } from '@/stores/voteStore';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export default function VoteFormModal() {
   const navigate = useNavigate();
@@ -25,8 +26,9 @@ export default function VoteFormModal() {
         setSelectedVote({
           ...voteToEdit,
           ...data,
+          participants: voteToEdit.participants,
         });
-        alert('투표가 수정되었습니다.');
+        toast.success('투표가 수정되었습니다.');
         closeVoteForm();
         navigate('/');
         return;
@@ -39,10 +41,10 @@ export default function VoteFormModal() {
       setIsConfirmOpen(true);
     } catch (error) {
       console.error('투표 생성/수정 실패:', error);
-      alert('투표 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
+      toast.error('투표 처리 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
-  
+
   const handleConfirmClose = () => {
     setIsConfirmOpen(false);
     resetRef.current();
