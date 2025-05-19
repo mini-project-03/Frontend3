@@ -139,7 +139,9 @@ export default function VoteDetailModal() {
           </div>
         </div>
         <hr className="border-t border-gray-600 mt-2" />
-        <p className="mt-4 mb-4 text-gray-200 whitespace-pre-line">{selectedVote.description}</p>
+        <p className="mt-4 mb-4 text-gray-200 whitespace-pre-line break-words">
+          {selectedVote.description}
+        </p>
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col gap-2">
