@@ -5,12 +5,12 @@ import { VoteRequest } from '@/types/vote';
 import { validateVoteForm } from '@/utils/validation';
 import { toDatetimeLocalFormat } from '@/utils/dateFormatter';
 import { useAuthStore } from '@/stores/authStore';
-import { motion } from 'framer-motion'; // ✅ 애니메이션 추가
+import { motion } from 'framer-motion';
 
 export default function VoteFormContent({
-                                          onSubmit,
-                                          onReset,
-                                        }: {
+  onSubmit,
+  onReset,
+}: {
   onSubmit: (data: VoteRequest) => void;
   onReset: (resetFn: () => void) => void;
 }) {
@@ -108,7 +108,7 @@ export default function VoteFormContent({
         <div className="flex items-center text-sm gap-2">
           <span className="text-xl">👤</span>
           <span className="text-base">모집자</span>
-          <span className="text-gray-400">{userInfo?.nickname ?? '여기는 사용자 이름'}</span>
+          <span className="text-gray-400">{userInfo?.userName ?? '사용자 이름 없음'}</span>
         </div>
 
         <div className="grid grid-cols-[140px_1fr] items-center gap-2">
@@ -142,7 +142,7 @@ export default function VoteFormContent({
             value={recruit}
             onChange={(e) => setRecruit(Number(e.target.value))}
             min={1}
-            max={20}
+            max={30}
             className="p-2 rounded-md bg-zinc-800 text-white border border-zinc-600"
           />
         </div>
