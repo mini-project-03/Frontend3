@@ -34,7 +34,8 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 ||
+      error.response?.status === 500 && !originalRequest._retry) {
       console.warn('[응답 인터셉터] 401 에러 발생. 토큰 재발급 시도...');
       originalRequest._retry = true;
 
