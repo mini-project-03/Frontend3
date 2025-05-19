@@ -5,6 +5,7 @@ import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
 import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { VoteAPI } from '@/api/voteAPI';
+import { toast } from 'sonner';
 
 interface VoteItemProps {
   vote: VoteResponse;
@@ -25,25 +26,22 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
 
   const [isParticipated, setIsParticipated] = useState(false);
 
-  useEffect(() => {
-    const checkParticipation = async () => {
-      if (isClosed && userInfo) {
-        try {
-          const list = await VoteAPI.getParticipantList(voteId);
-          const found = list.some((p) => String(p.id) === String(userInfo.userId));
-          setIsParticipated(found);
-        } catch (err) {
-          console.error('참여 여부 확인 실패:', err);
-        }
+  const handleOpenResult = async () => {
+    try {
+      const list = await VoteAPI.getParticipantList(vote.voteId);
+      const found = list.some((p) => String(p.id) === String(userInfo?.userId));
+      if (!found) {
+        toast.warning('투표에 참여한 사용자만 결과를 볼 수 있습니다');
+        return;
       }
-    };
-    checkParticipation();
-  }, [isClosed, userInfo, voteId]);
-
-  const handleOpenResult = () => {
-    setSelectedVote(vote);
-    openVoteDetail(vote);
-    fetchParticipantList(vote.voteId);
+      setIsParticipated(true);
+      await fetchParticipantList(vote.voteId);
+      setSelectedVote(vote);
+      openVoteDetail(vote);
+    } catch (err) {
+      console.error('결과 확인 실패:', err);
+      toast.error('결과 확인에 실패했습니다');
+    }
   };
 
   const handleClick = () => {
@@ -80,9 +78,8 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   return (
     <div
       onClick={handleClick}
-      className={`relative group cursor-pointer bg-[#1F1F1F] p-4 rounded-2xl shadow-lg w-full max-w-[300px] transition-transform duration-300 hover:scale-[1.03] ${
-        isClosed ? 'pointer-events-none opacity-50' : ''
-      }`}
+      className={`relative group cursor-pointer bg-[#1F1F1F] p-4 rounded-2xl shadow-lg w-full max-w-[300px] transition-transform duration-300 hover:scale-[1.03]
+         ${isClosed ? 'opacity-50' : ''}`}
     >
       {/* 이미지 영역 */}
       <div className="relative overflow-hidden rounded-xl">
@@ -100,7 +97,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
                   e.stopPropagation();
                   handleOpenResult();
                 }}
-                className="px-4 py-1 bg-white text-black rounded hover:bg-secondary hover:text-black transition"
+                className="px-4 py-1 bg-white text-black rounded hover:bg-primary hover:text-black transition font-bold"
               >
                 결과 확인
               </button>

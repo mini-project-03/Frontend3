@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const RandomMenuBox = () => {
+const LandingPage = () => {
   const navigate = useNavigate();
   const [selectedBoxId, setSelectedBoxId] = useState<number | null>(null);
   const [isRevealed, setIsRevealed] = useState(false);
@@ -58,7 +58,7 @@ const RandomMenuBox = () => {
       setStartShrink(true);
     }, 800);
     setTimeout(() => {
-      navigate('/');
+      navigate('/home');
     }, 1500);
   };
 
@@ -169,4 +169,4 @@ const RandomMenuBox = () => {
   );
 };
 
-export default RandomMenuBox;
+export default LandingPage;

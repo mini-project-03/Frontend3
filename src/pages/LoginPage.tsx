@@ -21,9 +21,10 @@ const LoginPage = () => {
       setUserInfo(response.userInfo);
       toast.success(`${response.userInfo.userName}님 환영합니다!`);
 
-      navigate('/');
+      navigate('/home');
     } catch (error: any) {
       console.error('로그인 실패:', error);
+      toast.error('로그인 실패. 아이디와 비밀번호를 확인해주세요.');
     }
   };
 

@@ -100,7 +100,7 @@ const Roulette = () => {
             onClick={handleStartRoulette}
             disabled={isSpinning}
             className={`flex-1 px-4 py-3 rounded-full font-semibold tracking-wide text-white shadow transition-colors duration-300 ${
-              isSpinning ? 'bg-gray-400 cursor-not-allowed' : 'bg-pink-500 hover:bg-pink-600'
+              isSpinning ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary-hover'
             }`}
           >
             {isSpinning ? '돌리는 중...' : '메뉴 뽑기'}
@@ -108,7 +108,7 @@ const Roulette = () => {
 
           <button
             onClick={handleOpenVoteForm}
-            className="flex-1 px-4 py-3 bg-green-600 text-white font-bold rounded-full shadow hover:bg-green-700 transition text-center"
+            className="flex-1 px-4 py-3 bg-secondary text-white font-bold rounded-full shadow hover:bg-secondary-hover transition text-center"
             type="button"
           >
             투표 만들기

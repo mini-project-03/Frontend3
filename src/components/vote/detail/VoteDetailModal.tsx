@@ -7,6 +7,7 @@ import VoteOptionsMenu from '../item/VoteOptionsMenu';
 import { useAuthStore } from '@/stores/authStore';
 import { useEffect, useState } from 'react';
 import ConfirmModal from '@/components/ui/confirmModal';
+import { toast } from 'sonner';
 
 export default function VoteDetailModal() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -101,7 +102,7 @@ export default function VoteDetailModal() {
     }
     try {
       await deleteVote(selectedVote.voteId);
-      alert('투표가 성공적으로 삭제되었습니다.');
+      toast.success('투표가 성공적으로 삭제되었습니다.');
       await fetchVotes();
       handleClose();
     } catch (err) {
@@ -116,7 +117,7 @@ export default function VoteDetailModal() {
       return;
     }
     await closeVote(selectedVote.voteId);
-    alert('투표가 마감되었습니다.');
+    toast.success('투표가 마감되었습니다.');
     handleClose();
   };
 
@@ -139,7 +140,9 @@ export default function VoteDetailModal() {
           </div>
         </div>
         <hr className="border-t border-gray-600 mt-2" />
-        <p className="mt-4 mb-4 text-gray-200 whitespace-pre-line">{selectedVote.description}</p>
+        <p className="mt-4 mb-4 text-gray-200 whitespace-pre-line break-words">
+          {selectedVote.description}
+        </p>
 
         <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col gap-2">

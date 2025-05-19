@@ -23,7 +23,7 @@ const LogoutButton = () => {
       clearAccessToken();
       clearUserInfo();
       toast.success('로그아웃 되었습니다!');
-      navigate('/');
+      navigate('/home');
     }
   };
   return (
