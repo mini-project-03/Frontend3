@@ -14,11 +14,10 @@ const VISIBLE_ITEM_COUNT = 4;
 const Roulette = () => {
   const controls = useAnimation();
   const [isSpinning, setIsSpinning] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [selectedGlobalIndex, setSelectedGlobalIndex] = useState<number | null>(null);
   const [containerHeight, setContainerHeight] = useState(window.innerHeight * 0.85);
 
-  const openVoteForm = useUIStore((s) => s.openVoteForm); // ✅ 투표 모달 열기 함수
+  const openVoteForm = useUIStore((s) => s.openVoteForm);
   const { requireAuth } = useRequireAuth();
 
   // 창 크기 변화에 따라 룰렛 높이 조정
@@ -48,7 +47,7 @@ const Roulette = () => {
   const handleStartRoulette = useCallback(async (): Promise<void> => {
     if (isSpinning) return;
     setIsSpinning(true);
-    setSelectedIndex(null);
+    // setSelectedIndex(null);
     setSelectedGlobalIndex(null);
 
     await controls.set({ y: 0 });
@@ -63,7 +62,7 @@ const Roulette = () => {
       transition: { duration: 3, ease: [0.1, 0.7, 0.4, 1] },
     });
 
-    setSelectedIndex(targetIndex);
+    // setSelectedIndex(targetIndex);
     setSelectedGlobalIndex(globalTargetIndex);
     setIsSpinning(false);
   }, [controls, isSpinning, centerIndexOffset, itemHeight]);
@@ -72,15 +71,15 @@ const Roulette = () => {
   const handleOpenVoteForm = () => {
     requireAuth(() => {
       openVoteForm();
-    })
-  }
+    });
+  };
+
+  const selectedSrc = selectedGlobalIndex !== null ? allItems[selectedGlobalIndex] : null;
 
   return (
     <>
       <div className="flex flex-col items-center w-full h-full px-4 py-6 bg-gradient-to-br from-yellow-100 to-white rounded-2xl shadow-lg">
-        <h1 className="text-gray-800 text-2xl font-semibold tracking-tight mb-4">
-          🍽️ 오늘 모먹?
-        </h1>
+        <h1 className="text-gray-800 text-2xl font-semibold tracking-tight mb-4">🍽️ 오늘 모먹?</h1>
 
         <div
           className="relative w-full max-w-md overflow-hidden rounded-xl shadow-md"
@@ -90,10 +89,10 @@ const Roulette = () => {
             controls={controls}
             allItems={allItems}
             selectedGlobalIndex={selectedGlobalIndex}
-            selectedIndex={selectedIndex}
             itemHeight={itemHeight}
+            selectedIndex={null}
           />
-          {selectedGlobalIndex !== null && <SelectedItemHighlight selectedIndex={selectedIndex} />}
+          {selectedSrc && <SelectedItemHighlight src={selectedSrc} />}
         </div>
 
         <div className="mt-6 flex gap-3 w-full max-w-md">
