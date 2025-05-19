@@ -40,8 +40,7 @@ export default function VoteDetailModal() {
   const isCreator = userInfo?.userId === selectedVote.creatorId;
   const creator = participantList?.find((p) => p.id === selectedVote.creatorId);
 
-  const isButtonDisabled =
-    isLoading || isClosed || (!localIsParticipated && isFull) || (localIsParticipated && isCreator);
+  const isButtonDisabled = isLoading || isClosed || (!localIsParticipated && isFull);
 
   const updateSelectedVote = async (voteId: number) => {
     await fetchVotes();
