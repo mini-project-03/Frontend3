@@ -101,6 +101,7 @@ export default function VoteFormContent({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="투표 제목을 입력하세요"
+            maxLength={25}
             className="w-full px-3 py-2 rounded-md bg-zinc-800 border border-zinc-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary transition"
           />
         </div>
