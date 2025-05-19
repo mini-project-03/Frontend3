@@ -1,5 +1,5 @@
-import React, { PropsWithChildren } from 'react';
-import signupImage from '/public/register.png';
+import { PropsWithChildren } from 'react';
+import signupImage from '/public/signup.png';
 import loginImage from '/public/loginImage.png';
 
 export enum AuthType {
