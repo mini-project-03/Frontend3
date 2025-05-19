@@ -2,10 +2,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
 import { VoteResponse } from '@/types/vote';
 import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
-import React, { useState } from 'react';
-import { useAuthStore } from '@/stores/authStore';
-import { VoteAPI } from '@/api/voteAPI';
-import { toast } from 'sonner';
+import React from 'react';
 
 interface VoteItemProps {
   vote: VoteResponse;
@@ -16,34 +13,11 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   const votePercentage = recruit > 0 ? (participants / recruit) * 100 : 0;
   const isClosed = status === 'closed';
 
-  const userInfo = useAuthStore((s) => s.userInfo);
   const setSelectedVote = useVoteStore((s) => s.setSelectedVote);
-  const fetchParticipantList = useVoteStore((s) => s.fetchParticipantList);
   const openVoteDetail = useUIStore((s) => s.openVoteDetail);
   const { requireAuth } = useRequireAuth();
 
-  const [isParticipated, setIsParticipated] = useState(false);
-
-  const handleOpenResult = async () => {
-    try {
-      const list = await VoteAPI.getParticipantList(vote.voteId);
-      const found = list.some((p) => String(p.id) === String(userInfo?.userId));
-      if (!found) {
-        toast.warning('투표에 참여한 사용자만 결과를 볼 수 있습니다');
-        return;
-      }
-      setIsParticipated(true);
-      await fetchParticipantList(vote.voteId);
-      setSelectedVote(vote);
-      openVoteDetail(vote);
-    } catch (err) {
-      console.error('결과 확인 실패:', err);
-      toast.error('결과 확인에 실패했습니다');
-    }
-  };
-
   const handleClick = () => {
-    if (isClosed) return;
     requireAuth(() => {
       setSelectedVote(vote);
       openVoteDetail(vote);
@@ -89,17 +63,15 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
         {isClosed && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center gap-2">
             <span className="text-white text-lg font-semibold">마감된 투표입니다</span>
-            {isParticipated && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleOpenResult();
-                }}
-                className="px-4 py-1 bg-white text-black rounded hover:bg-primary hover:text-black transition font-bold"
-              >
-                결과 확인
-              </button>
-            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClick(); // 결과 보기
+              }}
+              className="px-4 py-1 bg-white text-black rounded hover:bg-primary hover:text-black transition font-bold"
+            >
+              결과 보기
+            </button>
           </div>
         )}
       </div>

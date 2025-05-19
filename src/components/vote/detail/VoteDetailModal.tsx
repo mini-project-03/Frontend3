@@ -33,12 +33,14 @@ export default function VoteDetailModal() {
 
   if (!selectedVote) return null;
   const isFull = selectedVote!.participants >= selectedVote!.recruit;
+  const isClosed = selectedVote.status === 'closed';
 
   const isLoading = !participantList;
   const isCreator = userInfo?.userId === selectedVote.creatorId;
   const creator = participantList?.find((p) => p.id === selectedVote.creatorId);
+
   const isButtonDisabled =
-    isLoading || (!localIsParticipated && isFull) || (localIsParticipated && isCreator);
+    isLoading || isClosed || (!localIsParticipated && isFull) || (localIsParticipated && isCreator);
 
   useEffect(() => {
     if (selectedVote) {
@@ -58,6 +60,11 @@ export default function VoteDetailModal() {
   const handleParticipate = async () => {
     if (!selectedVote || !userInfo) return;
 
+    if (isClosed) {
+      toast.warning('마감된 투표는 참여가 불가능합니다.');
+      return;
+    }
+
     try {
       await participateInVote(selectedVote.voteId);
       setIsConfirmOpen(true);
@@ -70,6 +77,11 @@ export default function VoteDetailModal() {
 
   const handleCancelParticipation = async () => {
     if (!selectedVote) return;
+
+    if (isClosed) {
+      toast.warning('마감된 투표는 참여 취소가 불가능합니다.');
+      return;
+    }
 
     try {
       await cancelParticipationInVote(selectedVote.voteId);
@@ -96,7 +108,7 @@ export default function VoteDetailModal() {
   };
 
   const handleDelete = async () => {
-    if (!isCreator) {
+    if (!isCreator || isClosed) {
       alert('작성자만 삭제할 수 있습니다.');
       return;
     }
@@ -112,7 +124,7 @@ export default function VoteDetailModal() {
   };
 
   const handleForceClose = async () => {
-    if (!isCreator) {
+    if (!isCreator || isClosed) {
       alert('작성자만 마감할 수 있습니다.');
       return;
     }
@@ -125,12 +137,14 @@ export default function VoteDetailModal() {
     <Modal isOpen={!!selectedVote} onClose={handleClose}>
       <div className="relative p-4 w-full text-white rounded-xl">
         <div className="absolute right-4 top-4 flex gap-2 items-center">
-          <VoteOptionsMenu
-            isCreator={isCreator}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onClose={handleForceClose}
-          />
+          {!isClosed && isCreator && (
+            <VoteOptionsMenu
+              isCreator={isCreator}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onClose={handleForceClose}
+            />
+          )}
         </div>
 
         <div className="mb-1">
@@ -185,11 +199,24 @@ export default function VoteDetailModal() {
 
         <div className="mt-auto flex justify-end">
           <button
-            onClick={localIsParticipated ? handleCancelParticipation : handleParticipate}
-            disabled={isButtonDisabled}
+            onClick={(e) => {
+              e.preventDefault();
+              if (isClosed) {
+                toast.warning('마감된 투표는 참여가 불가능합니다.');
+                return;
+              }
+              if (localIsParticipated) {
+                handleCancelParticipation();
+              } else {
+                handleParticipate();
+              }
+            }}
             className={`w-[140px] py-2 px-4 rounded-lg font-semibold text-base flex items-center justify-center gap-2 transition ${
-              isLoading
-                ? 'bg-gray-300 text-white cursor-wait'
+              isLoading ||
+              isClosed ||
+              (!localIsParticipated && isFull) ||
+              (localIsParticipated && isCreator)
+                ? 'bg-gray-500 text-white cursor-not-allowed'
                 : 'bg-primary hover:bg-primary-hover text-white'
             }`}
           >
