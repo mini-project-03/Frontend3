@@ -39,11 +39,17 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   };
 
   const images = [
-    '/food1.png', '/food2.png', '/food3.png', '/food4.png',
-    '/food5.png', '/food6.png', '/food7.png', '/food8.png',
+    '/food1.png',
+    '/food2.png',
+    '/food3.png',
+    '/food4.png',
+    '/food5.png',
+    '/food6.png',
+    '/food7.png',
+    '/food8.png',
   ];
-  const randomImage = images[Math.floor(Math.random() * images.length)];
-
+  const imageIndex = voteId % images.length;
+  const fixedImage = images[imageIndex];
   return (
     <div
       onClick={handleClick}
@@ -54,7 +60,7 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
       {/* 이미지 영역 */}
       <div className="relative overflow-hidden rounded-xl">
         <img
-          src={randomImage}
+          src={fixedImage}
           alt={title}
           className={`w-full h-[180px] object-cover transition-transform duration-300 group-hover:scale-105 ${isClosed ? 'blur-sm' : ''}`}
         />
@@ -72,7 +78,9 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
 
         <div className="flex justify-between items-center text-sm text-white mt-1">
           <span>{formatDate(meetingStartTime)}</span>
-          <span className="text-indigo-400 font-semibold">{participants}/{recruit}</span>
+          <span className="text-indigo-400 font-semibold">
+            {participants}/{recruit}
+          </span>
         </div>
 
         {/* 진행률 바 */}
