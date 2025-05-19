@@ -1,8 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useVoteStore } from '@/stores/voteStore';
 import VoteItem from '@/components/vote/item/VoteItem';
-import { useUIStore } from '@/stores/uiStore';
+// import { useUIStore } from '@/stores/uiStore';
 // import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
 // import VoteFormModal from '@/components/vote/form/VoteFormModal';
 import VoteDetailModal from '@/components/vote/detail/VoteDetailModal';
