@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import BaseInput from '../common/BaseInput';
+import { validateField, validateForm } from '@/utils/AuthFormValidation';
 
 type Field = {
   id: string;
@@ -17,18 +18,38 @@ type AuthFormProps = {
 
 const AuthForm = ({ title, fields, buttonText, onSubmit, bottomText }: AuthFormProps) => {
   const [formData, setFormData] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isFormValid, setIsFormValid] = useState(false);
 
   const handleChange = useCallback((id: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    setFormData((prev) => {
+      const updated = { ...prev, [id]: value };
+      const errorMsg = validateField(id, value);
+      setErrors((prevErrors) => ({ ...prevErrors, [id]: errorMsg }));
+
+      const { isValid } = validateForm(updated);
+      setIsFormValid(isValid);
+
+      return updated;
+    });
   }, []);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      onSubmit(formData);
+      const { isValid, errors } = validateForm(formData);
+      setErrors(errors);
+      if (isValid) {
+        onSubmit(formData);
+      }
     },
-    [formData, onSubmit]
+    [formData, onSubmit],
   );
+
+  useEffect(() => {
+    const { isValid } = validateForm(formData);
+    setIsFormValid(isValid);
+  }, [formData]);
 
   return (
     <div className="md:w-1/2 md:pl-12 flex flex-col justify-center w-full">
@@ -43,14 +64,19 @@ const AuthForm = ({ title, fields, buttonText, onSubmit, bottomText }: AuthFormP
               type={field.type}
               value={formData[field.id] || ''}
               onChange={handleChange}
+              error={errors[field.id]}
             />
           ))}
           <button
             type="submit"
-            className="w-full py-2 bg-login-btn hover:bg-indigo-500 rounded-3xl text-white font-semibold mt-4"
+            className={`w-full py-2 rounded-3xl font-semibold mt-4 text-white ${
+              isFormValid ? 'bg-login-btn hover:bg-indigo-500' : 'bg-gray-500 cursor-not-allowed'
+            }`}
+            disabled={!isFormValid}
           >
             {buttonText}
           </button>
+
           {bottomText && <p className="text-sm mt-4 text-center text-white">{bottomText}</p>}
         </form>
       </div>
