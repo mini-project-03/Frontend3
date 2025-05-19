@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthAPI } from '@/api/authAPI';
 import { useAuthStore } from '@/stores/authStore.ts';
@@ -14,7 +13,6 @@ const LogoutButton = () => {
     try {
       if (accessToken) {
         await AuthAPI.logout(accessToken);
-        clearAccessToken(); //여기
       }
     } catch (error) {
       // 401은 무시해도 괜찮음

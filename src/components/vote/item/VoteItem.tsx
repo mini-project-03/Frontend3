@@ -2,7 +2,7 @@ import { useUIStore } from '@/stores/uiStore';
 import { useVoteStore } from '@/stores/voteStore';
 import { VoteResponse } from '@/types/vote';
 import { useRequireAuth } from '@/hooks/api/auth/useRequireAuth';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import { VoteAPI } from '@/api/voteAPI';
 import { toast } from 'sonner';
@@ -17,8 +17,6 @@ const VoteItem: React.FC<VoteItemProps> = ({ vote }) => {
   const isClosed = status === 'closed';
 
   const userInfo = useAuthStore((s) => s.userInfo);
-  const isCreator = creatorId === userInfo?.userId;
-
   const setSelectedVote = useVoteStore((s) => s.setSelectedVote);
   const fetchParticipantList = useVoteStore((s) => s.fetchParticipantList);
   const openVoteDetail = useUIStore((s) => s.openVoteDetail);

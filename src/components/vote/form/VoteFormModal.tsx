@@ -5,11 +5,9 @@ import VoteFormContent from './VoteFormContent';
 import Modal from '@/components/ui/Modal';
 import ConfirmModal from '@/components/ui/confirmModal';
 import { useVoteStore } from '@/stores/voteStore';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function VoteFormModal() {
-  const navigate = useNavigate();
   const { isVoteFormOpen, closeVoteForm, voteFormMode, voteToEdit } = useUIStore();
   const createVote = useVoteStore((s) => s.createVote);
   const updateVote = useVoteStore((s) => s.updateVote);
