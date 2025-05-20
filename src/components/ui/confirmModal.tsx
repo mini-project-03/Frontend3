@@ -32,7 +32,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = (
           >
             {/* 고정된 이미지 */}
             <img
-              src="/public/image 1.png"
+              src="/image 1.png"
               alt="캐릭터"
               className="w-20 h-20 -mt-16 mb-4"
             />
