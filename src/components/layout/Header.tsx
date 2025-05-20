@@ -14,7 +14,7 @@ const Header = () => {
   return (
     <header className="w-full bg-[#1E2030]/80 backdrop-blur-md border-b border-[#2f3244] shadow-md">
       <div className="max-w-[95rem] mx-auto flex justify-between items-center px-[2.5rem] pr-[0.5rem] py-3">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/')}>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/home')}>
           <span className="text-primary text-2xl font-bold font-baloo-bhaijaan select-none">
             Momuk
           </span>
@@ -30,6 +30,15 @@ const Header = () => {
           {accessToken && userInfo?.userId && (
             <span className="text-sm text-white/70 whitespace-nowrap">
               반갑습니다 <span className="font-semibold text-white">{userInfo.userName}</span>님!
+            </span>
+          )}
+
+          {accessToken && (
+            <span
+              onClick={() => navigate('/mypage')}
+              className="cursor-pointer text-sm font-semibold text-white hover:underline"
+            >
+              MyPage
             </span>
           )}
 
