@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from '@/pages/SignupPage';
 import BaseLayout from './components/layout/BaseLayout';
 import LandingPage from '@/pages/LandingPage.tsx';
+import MyPage from '@/pages/MyPage';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="signup" element={<SignupPage />} />
+        <Route path="mypage" element={<MyPage />} />
       </Route>
     </Routes>
   );
