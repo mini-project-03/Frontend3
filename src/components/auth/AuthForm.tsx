@@ -25,10 +25,8 @@ const AuthForm = ({ title, fields, buttonText, onSubmit, bottomText }: AuthFormP
     setFormData((prev) => {
       const updated = { ...prev, [id]: value };
       const { isValid, errors } = validateForm(updated);
-
       setErrors(errors);
       setIsFormValid(isValid);
-
       return updated;
     });
   }, []);
@@ -51,9 +49,9 @@ const AuthForm = ({ title, fields, buttonText, onSubmit, bottomText }: AuthFormP
   }, [formData]);
 
   return (
-    <div className="md:w-1/2 md:pl-12 flex flex-col justify-center w-full">
-      <div className="bg-item-background text-white rounded-lg shadow-md w-full max-w-md p-2 md:p-4">
-        <h2 className="text-md font-semibold mb-6 text-left">{title}</h2>
+    <div className="md:w-2/3 md:pl-12 flex flex-col justify-center w-full"> {/* 💡 md:w-1/2 → 2/3 */}
+      <div className="bg-item-background text-white rounded-lg shadow-md w-full max-w-lg p-4 md:p-8"> {/* 💡 wider max-width and padding */}
+        <h2 className="text-xl font-semibold mb-6 text-left">{title}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {fields.map((field) => (
             <BaseInput

@@ -39,15 +39,12 @@ const LoginPage = () => {
         buttonText={isPending ? '로그인 중...' : '로그인'}
         onSubmit={handleLogin}
         bottomText={
-          <p className="text-sm mt-4 text-center">
-            계정이 없으신가요?{' '}
-            <span
-              className="text-gray-300 cursor-pointer hover:underline"
-              onClick={() => navigate('/signup')}
-            >
-              회원가입
-            </span>
-          </p>
+          <span
+            className="text-gray-300 cursor-pointer hover:underline"
+            onClick={() => navigate('/signup')}
+          >
+            회원가입
+          </span>
         }
       />
     </AuthLayout>
